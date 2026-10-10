@@ -1,5 +1,7 @@
 # CyberOps Sandbox
 
+> **Project status:** See [project-status.md](project-status.md) for the live status and journey, or the [short](docs/project-complete-short.md) and [long](docs/project-complete-long.md) project summaries.
+
 Status: Active lab / practice environment
 
 ## Project summary
