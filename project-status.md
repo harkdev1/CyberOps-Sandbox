@@ -147,3 +147,61 @@ The Windows endpoint is on the OPNsense LAN, the Security, System, and PowerShel
 
 ---
 
+## Session – 2026-10-26
+
+### Status: In progress
+
+### Session summary
+### Work completed
+Reviewed the existing OPNsense virtual firewall and segmented network infrastructure, confirmed Windows endpoint and event-log baseline checks had been completed, established the remaining Month 1 foundation tasks, planned Ubuntu Server deployment and Wazuh installation, defined the first Month 2 milestone as collecting and investigating genuine Windows endpoint telemetry.
+
+### AI-reviewed session summary
+Summary:
+Significant progress was made in establishing foundational infrastructure and planning for the development of security operations capabilities. Key activities included reviewing existing network infrastructure, confirming baseline checks, establishing remaining Month 1 tasks, and planning for Wazuh deployment. The primary constraint identified is limited host memory, which requires further evaluation before proceeding with new installations.
+
+Tasks Completed:
+*   Reviewed the existing OPNsense virtual firewall and segmented network infrastructure.
+*   Confirmed completion of Windows endpoint and event-log baseline checks.
+*   Established the remaining Month 1 foundation tasks.
+*   Planned Ubuntu Server deployment and Wazuh installation.
+*   Defined the first Month 2 milestone: collecting and investigating genuine Windows endpoint telemetry.
+
+Issues Encountered:
+*   Available host memory is a significant deployment constraint. A previous check indicated approximately 4.9 GB available while lab VMs were running, which necessitates a thorough evaluation of Wazuh resource allocation prior to installation to ensure stable operation.
+
+Next Steps:
+*   Evaluate Wazuh resource requirements and optimize host memory allocation.
+*   Proceed with Ubuntu Server deployment.
+*   Install and configure Wazuh.
+*   Begin collecting and investigating genuine Windows endpoint telemetry to meet the Month 2 milestone.
+
+Notes:
+The project is transitioning from building and validating foundational infrastructure to developing practical security operations capabilities. There is a strong emphasis on leveraging real telemetry for evidence-based investigations within a reproducible environment.
+
+### Session details
+**Session time:** 2026-10-26, 05:52 to 06:38
+
+**Goal:** Validate practical SIEM deployment options for CyberOps Sandbox, establish the available hosting resources and constraints, select a feasible Wazuh deployment approach, prepare the Week 2 implementation starting point.
+
+**Goal achieved:** Yes
+
+**Duration:** 45 minutes (planned: 45 minutes)
+
+**Working story:** The transition from building and validating foundational infrastructure to developing practical security operations capabilities, with an emphasis on real telemetry, evidence-based investigation, and a reproducible environment.
+
+**Friction or blockers:** Available host memory is the main deployment constraint. The previous check showed approximately 4.9 GB available while the lab VMs were running, so Wazuh resource allocation needs to be evaluated before installation.
+
+**AI gaps:** None
+
+**AI peer review:** Approved by human at 2026-10-26 06:39:06
+
+**Reviewer notes:** Month 1 is substantially established at the infrastructure level. Remaining work includes evaluating available resources and installing Ubuntu Server. Month 2 begins with SIEM deployment, Windows endpoint integration, telemetry validation, and the first investigation.
+
+### Notes
+The target is to align the Month 1 checkpoint with the final week of October and begin Month 2 during the first week of November. The schedule is flexible if deployment requires additional troubleshooting.
+
+### Where we left off
+The lab is ready to move toward SIEM deployment, pending a fresh resource check. Next action: inspect available RAM on the physical Windows host, decide which VMs can remain powered on, and then create the Ubuntu Server VM. Do not begin Wazuh installation until the VM's resource requirements are feasible.
+
+---
+

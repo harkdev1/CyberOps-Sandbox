@@ -1,12 +1,13 @@
 {
-    "total_sessions": 6,
+    "total_sessions": 7,
     "days_logged": [
         "2026-09-30",
         "2026-10-07",
         "2026-10-08",
         "2026-10-11",
-        "2026-10-25"
+        "2026-10-25",
+        "2026-10-26"
     ],
-    "total_minutes": 66,
-    "last_session": "2026-10-25"
+    "total_minutes": 111,
+    "last_session": "2026-10-26"
 }

@@ -3,36 +3,42 @@
 Status: In progress
 
 ## Project story
-The CyberOps-Sandbox project is establishing a robust lab environment for advanced Security Information and Event Management (SIEM) and detection engineering. Currently in progress, this initiative has systematically validated the existing virtualized infrastructure, setting a clear, evidence-based foundation for upcoming deployments. Our focus has been on understanding the baseline configuration of network segments, Windows Server domain services, and target client endpoints, ensuring a stable and well-understood platform for building sophisticated threat detection capabilities.
+This summary outlines the ongoing development of the CyberOps-Sandbox project, highlighting key progress, lessons learned, and strategic next steps for building a robust security operations environment.
+
+---
 
 ### 1. Project story
 
-The CyberOps-Sandbox project is laying the essential groundwork for a dynamic lab environment dedicated to advanced SIEM and detection engineering. Our current 'in progress' phase has meticulously established a foundational understanding of the existing virtualized infrastructure, from core network segments to domain services and endpoint states. This deliberate baseline validation is crucial for ensuring a stable platform as we transition from passive inspection to active deployment of sophisticated security monitoring and analysis capabilities, ultimately enabling robust threat detection practices.
+The CyberOps-Sandbox project is actively building a practical, reproducible environment for security operations, with a strong focus on evidence-based investigations using real telemetry. The initiative is progressing from establishing foundational infrastructure to deploying advanced Security Information and Event Management (SIEM) capabilities. Our current efforts are centered on integrating Windows endpoint telemetry into a Wazuh-based SIEM, paving the way for detection engineering and incident response exercises within a controlled lab setting. This work is ongoing, with critical next steps identified for SIEM deployment and data collection.
 
 ### 2. Key achievements
 
-*   **Comprehensive Infrastructure Baseline:** Established a verified baseline of the virtualized environment, including OPNsense network configuration, the Windows Server 2025 domain controller (NS-DC01) with Active Directory and DNS roles, and a target Windows client (WIN11-CLIENT01).
-*   **Endpoint Telemetry Readiness:** Confirmed active Windows Security, System, and PowerShell Operational logging on the target endpoint, providing initial data sources and highlighting the critical immediate need for deploying dedicated endpoint telemetry agents.
-*   **Preserved Environment Integrity:** All baseline validation activities were conducted without modifying existing system or network configurations, maintaining the integrity and stability of the lab environment.
-*   **Identified Reusable Assets:** Documented existing administrative and PowerShell capabilities from prior projects, identifying potential for reuse in future SIEM and detection engineering efforts.
+*   **Infrastructure Baseline Established:** Successfully reviewed and documented the existing OPNsense virtual firewall and segmented network infrastructure (WAN, LAN, SERVERS) as an evidence-based starting point.
+*   **Endpoint Telemetry Readiness Confirmed:** Verified the network identity and initial event logging capabilities of a target Windows 11 client (WIN11-CLIENT01), confirming enabled Security, System, and PowerShell Operational logs.
+*   **SIEM Deployment Strategy Defined:** Developed a plan for deploying Wazuh on an Ubuntu Server to collect and analyze endpoint telemetry, with the collection and investigation of genuine Windows endpoint telemetry defined as the immediate Month 2 milestone.
+*   **Resource Constraints Identified:** Conducted host resource checks, confirming critical memory limitations (approximately 4.9 GB available with lab VMs running) that require optimization prior to SIEM installation.
+*   **Non-Invasive Baselining:** Completed initial infrastructure and endpoint checks without making any system or network configuration changes, preserving the existing lab environment's integrity.
 
 ### 3. Lessons learned
 
-*   **Privilege Management is Key:** Accessing critical security logs (e.g., Windows Security log) often requires elevated privileges, which must be accounted for in planning and automation.
-*   **Verify System Identity:** Hostnames and expected OS versions can differ from reality; deeper investigation into operating system identification is crucial for compatibility and accurate planning.
-*   **Proactive Resource Planning:** Early identification and addressing of host resource constraints (e.g., memory) are essential to prevent bottlenecks for future SIEM and detection component deployments.
-*   **Telemetry is Foundational:** A robust detection engineering strategy hinges on comprehensive endpoint telemetry; recognizing this visibility gap early effectively prioritizes subsequent technical milestones.
+*   **Resource Optimization is Critical:** Limited host memory presents a significant deployment constraint for SIEMs, necessitating careful resource planning and optimization before installation to ensure stable operation.
+*   **Thorough Baselining Uncovers Gaps:** Comprehensive pre-deployment checks are invaluable for identifying missing components, such as dedicated endpoint telemetry agents, which clearly define subsequent technical milestones.
+*   **Privilege Awareness is Key for Diagnostics:** Understanding and managing privilege requirements (e.g., elevated PowerShell for Windows Security log inspection) is crucial for effective initial reconnaissance and troubleshooting.
 
 ### 4. Next steps
 
-The immediate focus for CyberOps-Sandbox is on deploying and configuring essential endpoint telemetry agents (e.g., Wazuh, Sysmon) on WIN11-CLIENT01 to establish robust data collection. Concurrently, we will address identified host memory constraints to ensure adequate resources for upcoming SIEM and detection engineering tools. Further investigation into the endpoint's reported operating system identification will also be prioritized to confirm compatibility and avoid future issues, paving the way for active SIEM deployment.
+*   Evaluate Wazuh's specific resource requirements and optimize host memory allocation accordingly.
+*   Proceed with the deployment of Ubuntu Server as the SIEM host.
+*   Install and configure Wazuh.
+*   Begin collecting and investigating genuine Windows endpoint telemetry to achieve the defined Month 2 milestone.
 
 ### 5. Proof points
 
-*   **Visual Documentation:** Screenshots titled 'Endpoint Baseline Initial Audit' and 'Security Log Baseline' (2026-10-25) illustrate the initial state and active logging on the target endpoint.
-*   **Network & Endpoint Verification:** Confirmed WIN11-CLIENT01 network identity (IPv4 192.168.20.165, gateway 192.168.20.1) and verified active Windows logging sources, including 29,072 Security records, 1,792 System records, and 483 PowerShell Operational records observed.
-*   **Server Configuration:** NS-DC01 verified running Windows Server 2025 with Active Directory Domain Services and DNS roles for the `northstar.local` domain, operating within a VMware NAT network configuration.
-*   **Telemetry Gap Identified:** Explicit identification of the absence of dedicated endpoint telemetry agents as a critical technical milestone underscores the project's data-driven approach.
+*   **Project Logs:** Documented progress on 2026-10-25 and 2026-10-26, detailing infrastructure baselining, resource validation, and SIEM planning efforts.
+*   **Endpoint Readiness Data:** Verified WIN11-CLIENT01 network identity and event log status, with observed counts including 29,072 Security records, 1,792 System records, and 483 PowerShell Operational records on 2026-10-25.
+*   **Visual Evidence:** Project documentation includes screenshots depicting "Endpoint Baseline Initial Audit" and "Security Log Baseline", validating initial reconnaissance and telemetry visibility checks. Other key visual evidence covers "Telemetry Visibility Gap", "Process Creation Telemetry", "Security Event Distribution", and "CyberOps Baseline v0.1".
+*   **Strategic Planning:** An explicit Month 2 milestone has been defined to collect and investigate genuine Windows endpoint telemetry.
+*   **Constraint Documentation:** Acknowledged and documented the critical constraint of approximately 4.9 GB available host memory while lab VMs were running.
 
 ## What we shipped
 - The project was completed with a clear objective, technical execution, and proof captured in the logs.
