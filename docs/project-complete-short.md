@@ -3,37 +3,51 @@
 Status: In progress
 
 ## Project story
-This project is ongoing.
+Here is a concise project summary for 'CyberOps-Sandbox', reflecting its ongoing status.
 
 ---
 
-# CyberOps-Sandbox: SIEM Foundation & Endpoint Baselining
+# CyberOps-Sandbox: Building a Centralized Security Monitoring Environment
 
 ## 1. Project Story
-The 'CyberOps-Sandbox' project is actively establishing a practical environment for advanced security operations, currently focusing on building a robust foundation for centralized security monitoring. This initiative began by thoroughly assessing existing network infrastructure and endpoint telemetry on Windows systems, identifying key visibility gaps, and strategically planning for a Security Information and Event Management (SIEM) deployment using Wazuh. We've successfully provisioned a dedicated Ubuntu Server as the core SIEM host, meticulously integrating it into our segmented OPNsense virtual network. This foundational work sets the stage for advanced threat detection and analysis, moving beyond initial baselining towards operational security intelligence.
+
+The **CyberOps-Sandbox** project is actively establishing a dedicated, robust virtual environment for centralized security monitoring, designed to provide hands-on experience and demonstrate practical cyber operations capabilities. The project initiated by provisioning a foundational Ubuntu Server within VMware, strategically integrating it into a segmented virtual network (OPNsense LAN via VMnet2).
+
+Currently, the primary focus is on the crucial deployment of **Wazuh**, a leading open-source security platform, to serve as the core Security Information and Event Management (SIEM) solution. This involves meticulous selection and installation of the correct Ubuntu Server version (24.04.5 LTS) to ensure optimal compatibility and stability for Wazuh. Once Wazuh is operational, the sandbox will enable comprehensive security telemetry collection, baseline establishment, and incident analysis, laying the groundwork for advanced cyber defense practices.
 
 ## 2. Key Achievements
-*   **SIEM Host Foundation Established:** Successfully provisioned and configured a dedicated Ubuntu Server (26.04.1 LTS) virtual machine, purpose-built for centralized security monitoring within VMware.
-*   **Segmented Network Integration:** Seamlessly integrated the new SIEM host into the existing OPNsense-managed segmented LAN (VMnet2), ensuring controlled and secure network communication.
-*   **Core System & Remote Access Operational:** Configured essential system components, validated network connectivity (DNS, gateway), and established secure remote SSH access, preparing the environment for immediate Wazuh deployment.
-*   **Initial Endpoint Visibility Baselined:** Completed initial baseline checks on Windows endpoints, auditing event logs and identifying telemetry visibility gaps, providing a clear path for future SIEM data ingestion.
-*   **Strategic Deployment Planning:** Conducted a comprehensive review of host resources and network infrastructure to select a feasible Wazuh deployment approach, anticipating and addressing potential constraints like host memory limitations.
+
+*   **Foundational Server Provisioning:** Successfully provisioned and configured an Ubuntu Server virtual machine in VMware, establishing the essential operating system foundation for the security monitoring solution.
+*   **Network Segmentation & Integration:** Seamlessly integrated the server into a segmented virtual network (OPNsense LAN via VMnet2), ensuring proper isolation and controlled communication crucial for security operations.
+*   **Remote Administration Enabled:** Established and verified remote SSH access from the host machine to the Ubuntu Server, streamlining management and configuration tasks.
+*   **Critical OS Version Alignment:** Through proactive compatibility review, identified and prepared for the correct Ubuntu Server 24.04.5 LTS version necessary for a stable Wazuh deployment, avoiding potential issues with an initially considered newer release.
+*   **Initial Setup Challenge Resolution:** Demonstrated effective problem-solving by navigating and resolving initial setup challenges, including forgotten login credentials via recovery mode and adapting to host resource constraints for VM memory allocation.
+*   **Wazuh Deployment Readiness:** Progressed to the point of acquiring necessary Wazuh components (e.g., signing key) and preparing the VM for the all-in-one Wazuh installation, signifying readiness for the core SIEM deployment phase.
 
 ## 3. Lessons Learned
-*   **Credential Management & Recovery:** Encountered and successfully resolved an initial login failure on the Ubuntu server due to forgotten credentials, highlighting the critical importance of robust credential management and swift recovery protocols in infrastructure deployment.
-*   **Resource Optimization in Constrained Environments:** Learned to adapt VM resource allocation (e.g., conservative 4GB RAM) to align with host resource availability, emphasizing the need for ongoing performance monitoring and dynamic resource adjustment.
-*   **Pre-Deployment Baselines are Crucial:** Validated the value of conducting thorough baseline assessments (e.g., Windows event logs, network checks) *before* SIEM deployment to effectively identify gaps and inform solution architecture.
+
+*   **Pre-emptive Version Compatibility is Key:** The importance of thoroughly verifying operating system compatibility with target applications (Wazuh) *before* deployment became evident, as an initial incorrect Ubuntu version choice necessitated an OS replacement, highlighting the value of upfront planning.
+*   **Systematic Troubleshooting & Recovery:** Encountering and successfully resolving issues like forgotten login credentials reinforced the necessity of methodical troubleshooting and leveraging system recovery mechanisms.
+*   **Iterative Resource Allocation:** Acknowledged that initial conservative VM resource allocations, driven by host limitations, require ongoing review and potential adjustment as project requirements and performance demands evolve, particularly with the introduction of resource-intensive applications like Wazuh.
+*   **Distinguishing ISO vs. Booted OS:** Learned the critical distinction between an attached ISO and the *actually booted* operating system version to ensure correct configurations and avoid future deployment roadblocks.
 
 ## 4. Next Steps
-*   **Wazuh Installation & Configuration:** Proceed with the comprehensive installation and configuration of Wazuh on the newly provisioned Ubuntu SIEM server.
-*   **Performance Monitoring & Optimization:** Continuously monitor the SIEM host's performance during Wazuh operations, reviewing and adjusting VM memory allocation as needed to ensure optimal data processing and analysis capabilities.
-*   **Endpoint Agent Deployment & Data Ingestion:** Deploy Wazuh agents to designated Windows endpoints and configure data ingestion pipelines to centralize security telemetry for analysis.
+
+*   Complete the Ubuntu Server 24.04.5 LTS installation and verification on the virtual machine.
+*   Proceed with the all-in-one deployment and configuration of the Wazuh Manager, Indexer, and Dashboard.
+*   Validate Wazuh services are fully operational, accessible, and ready for agent enrollment.
+*   Begin ingesting security telemetry from various endpoints and establishing initial monitoring baselines within Wazuh.
+*   Continuously review and potentially increase VM memory allocation based on Wazuh performance and host resource availability.
 
 ## 5. Proof Points
-*   **Ubuntu Server 26.04.1 LTS (ubuntu-siem01):** Provisioned with 2 CPU cores, 4 GB RAM, and a 50 GB virtual disk, serving as the dedicated SIEM host.
-*   **Network Integration:** Successfully connected to the OPNsense-managed VMnet2, assigned IPv4 address 192.168.20.131/24, with verified gateway and DNS resolution.
-*   **Remote Accessibility:** OpenSSH Server enabled and successfully verified for secure remote access from the physical Windows host.
-*   **Screenshot Evidence:** Visual documentation includes "Ubuntu Storage Configuration," "Ubuntu Server First Login," "Ubuntu SSH Service Running," along with initial "Endpoint Baseline Initial Audit" and "Security Log Baseline," demonstrating foundational progress.
+
+**Project Logs:**
+*   `2026-11-03.md`: Documents the successful provisioning of the Ubuntu Server, its integration into the segmented network, establishment of SSH access, and initial configuration.
+*   `2026-11-04.md`: Details the proactive compatibility review, the identification and procurement of the correct Ubuntu Server 24.04.5 LTS for Wazuh, and the ongoing preparatory steps for the Wazuh deployment.
+
+**Screenshot Captions (Evidencing foundational work and future intent):**
+*   **Foundational Setup:** "Ubuntu Storage Configuration," "Ubuntu Username Recovery after forgetting," "Ubuntu Server First Login," "Ubuntu SSH Service Running"
+*   **Security Monitoring Objectives:** "Endpoint Baseline Initial Audit," "Security Log Baseline," "Telemetry Visibility Gap," "Process Creation Telemetry," "Security Event Distribution," "CyberOps Baseline v0.1" (Indicating the strategic intent to build comprehensive security monitoring and analysis capabilities).
 
 ## What we shipped
 - The project was completed with a clear objective, technical execution, and proof captured in the logs.
