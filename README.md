@@ -136,12 +136,19 @@ cd D:\Projects\CyberOps-Sandbox
 ```text
 CyberOps-Sandbox/
 ├── README.md             Project overview and current plan
+├── project-status.md     Current status and session history
 ├── logs/                 Investigation and session records
 ├── docs/                 Notes, summaries, and supporting documentation
 ├── screenshots/          Visual evidence and screenshots
+├── projects/             Consolidated Helpdesk and Networking project snapshots
 ├── CHANGELOG.md          Project timeline and milestone entries
 └── .autodoc/             Local AutoDoc state for tracking work
 ```
+
+## Consolidated project work
+- [Windows Helpdesk Lab archive](projects/windows-helpdesk-lab/README.md)
+- [Networking & Infrastructure archive](projects/networking-infrastructure-engineering/README.md)
+- [Archive scope and source commits](projects/README.md)
 
 ## Notes
 This project is meant to behave like a real operational workspace: practical, evidence-driven, and easy to revisit later for reviews or retrospective summaries.

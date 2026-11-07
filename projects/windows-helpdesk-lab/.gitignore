@@ -1,0 +1,14 @@
+# Python virtual environments
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# AutoDoc temporary session state
+.autodoc/session.json
+
+# Local environment secrets
+.env
+.env.*
+!.env.example

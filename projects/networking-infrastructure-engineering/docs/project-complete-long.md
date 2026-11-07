@@ -1,0 +1,8303 @@
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This project is a critical initiative in establishing a robust and secure foundational network environment.
+
+---
+
+### 1. Project story
+
+This ongoing project focuses on architecting and implementing a robust networking infrastructure powered by OPNsense, including the integration of dedicated WAN, LAN, and a new SERVERS subnet. The core work involves configuring network interfaces, establishing secure endpoint-to-gateway connectivity across subnets, and rigorously validating firewall enforcement policies. While foundational components have been successfully deployed and initial validation demonstrated, the project is currently addressing a critical stability challenge where network connectivity does not reliably recover after temporary firewall rule modifications. This phase is dedicated to diagnosing and resolving these state management issues to ensure a resilient and secure network environment for future services.
+
+### 2. Key achievements
+
+*   **Multi-Interface OPNsense Deployment:** Successfully configured and validated OPNsense with distinct WAN, LAN, and a newly integrated SERVERS (192.168.10.1/24) virtual network interface.
+*   **Verified Endpoint Connectivity:** Demonstrated reliable endpoint-to-gateway communication from test clients on both LAN and the SERVERS subnet, confirming basic network reachability.
+*   **Granular Firewall Enforcement:** Validated the capability to implement targeted ICMP blocking rules, with evidence of traffic being successfully blocked and recorded in firewall logs.
+*   **Comprehensive Client Validation Framework:** Established a methodical approach to client validation, encompassing gateway connectivity, outbound internet access, DNS resolution, and HTTPS reachability across different network segments.
+*   **Initial Documentation Foundation:** Developed foundational project documentation, including network addressing schemas, preliminary firewall rule behavior summaries, and a PowerShell script for automated network validation.
+
+### 3. Lessons learned
+
+*   **Complexity of Firewall State Management:** Removal of temporary firewall rules does not automatically guarantee immediate restoration of connectivity. This highlights the critical need for rigorous verification of firewall state, rule application, and explicit state table cleanup.
+*   **Importance of Post-Rule-Removal Validation:** It is crucial to explicitly confirm full connectivity restoration after any firewall rule modification, even if the rule is designed to be temporary. Our definition of done will now explicitly include this step for future changes.
+*   **Thorough Documentation Throughout:** The extensive need for detailed documentation (network addressing, firewall behavior, validation results, limitations) underscores its indispensable role in complex network projects, especially when troubleshooting unexpected behavior.
+*   **Careful Scoping & Environment Control:** Challenges like initial validation occurring on the host PC (instead of the intended VM) and misinterpretation of PowerShell output emphasize the need for strict test environment control and precise interpretation of diagnostic tools.
+
+### 4. Next steps
+
+*   **Investigate Firewall State Anomaly:** Conduct a deep dive into the OPNsense firewall's persistent state (`pfctl -sr`, `pfctl -si`) to precisely diagnose why connectivity did not restore after temporary rule removal.
+*   **Develop Robust Firewall Cleanup Procedures:** Define and document a reliable process for ensuring proper firewall rule cleanup and consistent application of configurations, potentially leveraging OPNsense's lifecycle management features.
+*   **Re-validate SERVERS Subnet Connectivity:** Once firewall state issues are resolved, rigorously re-establish and confirm stable endpoint-to-gateway connectivity for the SERVERS subnet, verifying full restoration.
+*   **Finalize Validation and Documentation:** Complete any remaining validation steps and refine project documentation, including the network topology, IP scheme, and firewall policy summary, ensuring it accurately reflects the resolved and stable state of the network.
+
+### 5. Proof points
+
+*   **Screenshot:** `Servers Firewall Log`
+*   **Screenshot:** `Server Firewall Block Rule (Test)`
+*   **Screenshot:** `Lan-Validation`
+*   **Screenshot:** `WIN11-CLIENT Installation Complete`
+*   **Screenshot:** `Win11 Client01 Single LAN DHCP Verified`
+*   **Screenshot:** `Win11 Client01 Outbound Connectivity Test`
+*   **Screenshot:** `OPNSense LAN Firewall Rules Baseline`
+*   **Screenshot:** `OPNsense ICMP Block Log Evidence`
+*   **Screenshot:** `OPNsense Firewall Test Results`
+*   **Screenshot:** `OPNSense LAN DHCP Subnet`
+*   **Log Entry:** "Validated the OPNsense SERVERS virtual network interface configuration at 192.168.10.1/24."
+*   **Log Entry:** "Confirmed successful endpoint-to-gateway connectivity from WIN11-CLIENT01 to OPNsense via ICMP, receiving 4/4 successful replies."
+*   **Log Entry:** "Confirmed that traffic was successfully blocked and recorded in the OPNsense firewall logs during the rule's active period."
+*   **Log Entry:** "Configured and validated OPNsense WAN, LAN, and SERVERS interfaces."
+*   **Log Entry:** "Verified the additional SERVERS subnet and tested gateway reachability."
+*   **Log Entry:** "Validated Windows client gateway connectivity and outbound access."
+*   **Log Entry:** "Confirmed DNS resolution and HTTPS connectivity for client systems."
+
+## Project timeline
+### 2026-10-25 • 08:45 to 09:14
+- Goal
+Confirm whether the existing OPNsense SERVERS interface at 192.168.10.1/24 can communicate with a test endpoint on VMnet1, then capture the result.
+
+- Definition of Done
+A test endpoint obtains or is assigned an appropriate address on 192.168.10.0/24, the endpoint can reach 192.168.10.1, and the result is recorded. If testing is blocked, document the exact blocker after one targeted troubleshooting attempt.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+An additional virtual network interface was configured on OPNsense, and endpoint-to-gateway connectivity was successfully demonstrated. Firewall enforcement was verified by creating and testing a temporary ICMP block rule, with traffic confirmation in live logs. However, an issue was identified where connectivity did not recover after the temporary firewall rule was removed, indicating a potential firewall cleanup problem requiring follow-up investigation.
+
+Tasks Completed:
+*   Validated the OPNsense SERVERS virtual network interface configuration at 192.168.10.1/24.
+*   Connected WIN11-CLIENT01 to VMnet1, establishing it as a temporary test endpoint.
+*   Confirmed successful endpoint-to-gateway connectivity from WIN11-CLIENT01 to OPNsense via ICMP, receiving 4/4 successful replies.
+*   Created and tested a temporary ICMP block rule on OPNsense to deny ping traffic.
+*   Confirmed that traffic was successfully blocked and recorded in the OPNsense firewall logs during the rule's active period.
+
+Issues Encountered:
+*   Connectivity from WIN11-CLIENT01 to the OPNsense gateway did not recover after the temporary ICMP block rule was removed.
+*   Repeated ping tests did not resolve the connectivity loss.
+*   It is suspected that firewall changes may have remained pending or unapplied, even after rule removal, preventing the restoration of network connectivity.
+
+Next Steps:
+*   Investigate the OPNsense firewall's state to determine why connectivity did not restore after rule removal (e.g., check `pfctl -sr` and `pfctl -si` for persistent rules or state table issues).
+*   Attempt to manually reapply firewall rules or restart the firewall service to clear any stuck or unapplied configurations.
+*   Re-establish and confirm endpoint-to-gateway connectivity from WIN11-CLIENT01.
+*   Document procedures for ensuring proper firewall rule cleanup and application consistency on OPNsense.
+
+Notes:
+None.
+
+- Working Story
+Configured an additional virtual network interface, demonstrated endpoint-to-gateway connectivity, verified firewall enforcement using live logs, identified a firewall cleanup issue requiring follow-up
+
+- Friction and AI Gaps
+Connectivity did not recover after the temporary firewall rule was removed, firewall changes may have remained pending, repeated ping tests did not resolve the issue
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 09:15:53
+Reviewer Notes: The SERVERS interface is assigned to em2 on VMnet1 with address 192.168.10.1/24. The temporary endpoint used 192.168.10.128/24. Gateway reachability was demonstrated successfully, and the temporary ICMP block was confirmed in firewall logs. The visible rules list no longer showed the temporary block, but connectivity restoration was not confirmed. Do not claim complete subnet isolation or successful final firewall cleanup.
+
+- Duration
+29 minutes (Planned: 60 minutes)
+
+- Notes
+
+
+## Screenshot – Lan-Validation
+![Lan-Validation](../screenshots/2026-10-25_181025_lan-validation.png)
+
+---
+
+## Session – 17:27 to 18:21
+- Goal
+Finish the Networking & Infrastructure MVP, restore the normal client network configuration, finalize validation evidence and documentation, prepare the project for final review.
+
+- Definition of Done
+Temporary firewall test rule removed, pending firewall changes resolved, WIN11-CLIENT01 restored to VMnet2, existing network tests and firewall evidence recorded, topology and IP addressing documented, firewall policy summary and validation script completed, project files reviewed for a clean commit and push.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This task involved the configuration and validation of OPNsense WAN, LAN, and SERVERS interfaces, including the integration of a new SERVERS subnet and verification of gateway reachability. Targeted ICMP blocking was successfully demonstrated and logged. Comprehensive client validation was performed, confirming gateway connectivity, outbound access, DNS resolution, and HTTPS connectivity. All pertinent documentation, including network addressing, firewall behavior, validation results, limitations, and network topology, was updated. A PowerShell network validation script was also prepared. However, significant issues were encountered, most notably the unexpected failure of SERVERS subnet connectivity to recover after removal of a temporary ICMP block rule, and the subsequent unverified state of post-cleanup gateway connectivity. Other challenges included an accidental initial validation on the host PC, misinterpretation of PowerShell output, and an extended documentation and repository review process.
+
+Tasks Completed:
+*   Configured and validated OPNsense WAN, LAN, and SERVERS interfaces.
+*   Verified the additional SERVERS subnet and tested gateway reachability.
+*   Demonstrated targeted ICMP blocking and confirmed blocked traffic in firewall logs.
+*   Validated Windows client gateway connectivity and outbound access.
+*   Confirmed DNS resolution and HTTPS connectivity for client systems.
+*   Documented network addressing and firewall rule behavior.
+*   Created validation results and limitations documentation.
+*   Prepared a PowerShell network validation script.
+*   Captured LAN validation evidence.
+*   Updated the network topology artifact.
+
+Issues Encountered:
+*   Connectivity for the SERVERS subnet did not recover as expected after removal of a temporary ICMP block rule.
+*   Post-cleanup gateway connectivity remains unverified across affected interfaces.
+*   Initial validation attempts were accidentally performed on the host PC rather than the designated Windows client VM.
+*   PowerShell script output was initially misinterpreted, requiring additional analysis to correctly interpret results.
+*   The final documentation and repository review process took longer than originally estimated.
+
+Next Steps:
+*   Investigate and resolve the SERVERS subnet connectivity issue that arose after the temporary ICMP block rule removal.
+*   Perform comprehensive verification of gateway connectivity for all interfaces post-cleanup.
+*   Review and refine the PowerShell network validation script to improve clarity and prevent future misinterpretations.
+
+Notes:
+*   No AI-related issues or inaccuracies were identified during this task.
+*   **Key points of emphasis from this work include:**
+    *   The unexpected failure of SERVERS subnet connectivity to recover after removal of a temporary ICMP block rule.
+    *   The current unverified state of post-cleanup gateway connectivity.
+    *   The initial validation error of running checks on the host PC instead of the client VM.
+    *   The initial misinterpretation of PowerShell output, highlighting a need for careful review.
+    *   The extended duration required for final documentation and repository review.
+
+- Working Story
+Connectivity did not recover as expected after removal of the temporary SERVERS ICMP block rule, post-cleanup gateway connectivity remains unverified, initial validation was accidentally run on the host PC rather than the Windows client VM, PowerShell output was initially misinterpreted, final documentation and repository review took longer than expected.
+
+- Friction and AI Gaps
+Connectivity did not recover as expected after removal of the temporary SERVERS ICMP block rule, post-cleanup gateway connectivity remains unverified, initial validation was accidentally run on the host PC rather than the Windows client VM, PowerShell output was initially misinterpreted, final documentation and repository review took longer than expected.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 18:23:05
+Reviewer Notes: The MVP demonstrates foundational networking, routing, firewall configuration, connectivity testing, and evidence-based troubleshooting. The strongest confirmed results are successful LAN gateway reachability, public IP connectivity, DNS resolution, HTTPS connectivity, and observed firewall blocking during temporary rule tests. Do not claim complete LAN-to-SERVERS isolation or confirmed restoration of SERVERS gateway connectivity after removal of the temporary rule.
+
+- Duration
+31 minutes (Planned: 60 minutes)
+
+- Notes
+The existing Windows Server domain controller was preserved on VMnet8. The Windows client was used as a temporary test endpoint on SERVERS during the firewall test and was subsequently validated on LAN. Confirm its final VMware adapter assignment before treating the lab as fully restored.
+### 2026-10-22 • 05:05 to 05:36
+- Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+- Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+- Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+- Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+- Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+- Duration
+31 minutes (Planned: 30 minutes)
+
+- Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+- Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+- Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+- Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+- Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+- What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+- Duration
+104 minutes (Planned: 90 minutes)
+
+- Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+- Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+- Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+- Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+- Duration
+52 minutes (Planned: 30 minutes)
+
+- Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Server Firewall Block Rule Test
+![Server Firewall Block Rule Test](../screenshots/2026-10-25_090814_server-firewall-block-rule-test.png)
+This screenshot shows the current configuration or system state being reviewed as part of the active project setup, validation, or troubleshooting work. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Servers Firewall Log
+![Servers Firewall Log](../screenshots/2026-10-25_085739_servers-firewall-log.png)
+This screenshot shows the current configuration or system state being reviewed as part of the active project setup, validation, or troubleshooting work. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Opnsense Kea Dhcp Service Status Active
+![Opnsense Kea Dhcp Service Status Active](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+This screenshot shows the working interface or project state that is currently being shaped to communicate the latest status, progress, and story. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-25 • 08:45 to 09:14
+### Goal
+Confirm whether the existing OPNsense SERVERS interface at 192.168.10.1/24 can communicate with a test endpoint on VMnet1, then capture the result.
+
+### Definition of Done
+A test endpoint obtains or is assigned an appropriate address on 192.168.10.0/24, the endpoint can reach 192.168.10.1, and the result is recorded. If testing is blocked, document the exact blocker after one targeted troubleshooting attempt.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+An additional virtual network interface was configured on OPNsense, and endpoint-to-gateway connectivity was successfully demonstrated. Firewall enforcement was verified by creating and testing a temporary ICMP block rule, with traffic confirmation in live logs. However, an issue was identified where connectivity did not recover after the temporary firewall rule was removed, indicating a potential firewall cleanup problem requiring follow-up investigation.
+
+Tasks Completed:
+*   Validated the OPNsense SERVERS virtual network interface configuration at 192.168.10.1/24.
+*   Connected WIN11-CLIENT01 to VMnet1, establishing it as a temporary test endpoint.
+*   Confirmed successful endpoint-to-gateway connectivity from WIN11-CLIENT01 to OPNsense via ICMP, receiving 4/4 successful replies.
+*   Created and tested a temporary ICMP block rule on OPNsense to deny ping traffic.
+*   Confirmed that traffic was successfully blocked and recorded in the OPNsense firewall logs during the rule's active period.
+
+Issues Encountered:
+*   Connectivity from WIN11-CLIENT01 to the OPNsense gateway did not recover after the temporary ICMP block rule was removed.
+*   Repeated ping tests did not resolve the connectivity loss.
+*   It is suspected that firewall changes may have remained pending or unapplied, even after rule removal, preventing the restoration of network connectivity.
+
+Next Steps:
+*   Investigate the OPNsense firewall's state to determine why connectivity did not restore after rule removal (e.g., check `pfctl -sr` and `pfctl -si` for persistent rules or state table issues).
+*   Attempt to manually reapply firewall rules or restart the firewall service to clear any stuck or unapplied configurations.
+*   Re-establish and confirm endpoint-to-gateway connectivity from WIN11-CLIENT01.
+*   Document procedures for ensuring proper firewall rule cleanup and application consistency on OPNsense.
+
+Notes:
+None.
+
+### Working Story
+Configured an additional virtual network interface, demonstrated endpoint-to-gateway connectivity, verified firewall enforcement using live logs, identified a firewall cleanup issue requiring follow-up
+
+### Friction and AI Gaps
+Connectivity did not recover after the temporary firewall rule was removed, firewall changes may have remained pending, repeated ping tests did not resolve the issue
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 09:15:53
+Reviewer Notes: The SERVERS interface is assigned to em2 on VMnet1 with address 192.168.10.1/24. The temporary endpoint used 192.168.10.128/24. Gateway reachability was demonstrated successfully, and the temporary ICMP block was confirmed in firewall logs. The visible rules list no longer showed the temporary block, but connectivity restoration was not confirmed. Do not claim complete subnet isolation or successful final firewall cleanup.
+
+### Duration
+29 minutes (Planned: 60 minutes)
+
+### Notes
+
+
+## Screenshot – Lan-Validation
+![Lan-Validation](../screenshots/2026-10-25_181025_lan-validation.png)
+
+---
+
+## Session – 17:27 to 18:21
+### Goal
+Finish the Networking & Infrastructure MVP, restore the normal client network configuration, finalize validation evidence and documentation, prepare the project for final review.
+
+### Definition of Done
+Temporary firewall test rule removed, pending firewall changes resolved, WIN11-CLIENT01 restored to VMnet2, existing network tests and firewall evidence recorded, topology and IP addressing documented, firewall policy summary and validation script completed, project files reviewed for a clean commit and push.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This task involved the configuration and validation of OPNsense WAN, LAN, and SERVERS interfaces, including the integration of a new SERVERS subnet and verification of gateway reachability. Targeted ICMP blocking was successfully demonstrated and logged. Comprehensive client validation was performed, confirming gateway connectivity, outbound access, DNS resolution, and HTTPS connectivity. All pertinent documentation, including network addressing, firewall behavior, validation results, limitations, and network topology, was updated. A PowerShell network validation script was also prepared. However, significant issues were encountered, most notably the unexpected failure of SERVERS subnet connectivity to recover after removal of a temporary ICMP block rule, and the subsequent unverified state of post-cleanup gateway connectivity. Other challenges included an accidental initial validation on the host PC, misinterpretation of PowerShell output, and an extended documentation and repository review process.
+
+Tasks Completed:
+*   Configured and validated OPNsense WAN, LAN, and SERVERS interfaces.
+*   Verified the additional SERVERS subnet and tested gateway reachability.
+*   Demonstrated targeted ICMP blocking and confirmed blocked traffic in firewall logs.
+*   Validated Windows client gateway connectivity and outbound access.
+*   Confirmed DNS resolution and HTTPS connectivity for client systems.
+*   Documented network addressing and firewall rule behavior.
+*   Created validation results and limitations documentation.
+*   Prepared a PowerShell network validation script.
+*   Captured LAN validation evidence.
+*   Updated the network topology artifact.
+
+Issues Encountered:
+*   Connectivity for the SERVERS subnet did not recover as expected after removal of a temporary ICMP block rule.
+*   Post-cleanup gateway connectivity remains unverified across affected interfaces.
+*   Initial validation attempts were accidentally performed on the host PC rather than the designated Windows client VM.
+*   PowerShell script output was initially misinterpreted, requiring additional analysis to correctly interpret results.
+*   The final documentation and repository review process took longer than originally estimated.
+
+Next Steps:
+*   Investigate and resolve the SERVERS subnet connectivity issue that arose after the temporary ICMP block rule removal.
+*   Perform comprehensive verification of gateway connectivity for all interfaces post-cleanup.
+*   Review and refine the PowerShell network validation script to improve clarity and prevent future misinterpretations.
+
+Notes:
+*   No AI-related issues or inaccuracies were identified during this task.
+*   **Key points of emphasis from this work include:**
+    *   The unexpected failure of SERVERS subnet connectivity to recover after removal of a temporary ICMP block rule.
+    *   The current unverified state of post-cleanup gateway connectivity.
+    *   The initial validation error of running checks on the host PC instead of the client VM.
+    *   The initial misinterpretation of PowerShell output, highlighting a need for careful review.
+    *   The extended duration required for final documentation and repository review.
+
+### Working Story
+Connectivity did not recover as expected after removal of the temporary SERVERS ICMP block rule, post-cleanup gateway connectivity remains unverified, initial validation was accidentally run on the host PC rather than the Windows client VM, PowerShell output was initially misinterpreted, final documentation and repository review took longer than expected.
+
+### Friction and AI Gaps
+Connectivity did not recover as expected after removal of the temporary SERVERS ICMP block rule, post-cleanup gateway connectivity remains unverified, initial validation was accidentally run on the host PC rather than the Windows client VM, PowerShell output was initially misinterpreted, final documentation and repository review took longer than expected.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 18:23:05
+Reviewer Notes: The MVP demonstrates foundational networking, routing, firewall configuration, connectivity testing, and evidence-based troubleshooting. The strongest confirmed results are successful LAN gateway reachability, public IP connectivity, DNS resolution, HTTPS connectivity, and observed firewall blocking during temporary rule tests. Do not claim complete LAN-to-SERVERS isolation or confirmed restoration of SERVERS gateway connectivity after removal of the temporary rule.
+
+### Duration
+31 minutes (Planned: 60 minutes)
+
+### Notes
+The existing Windows Server domain controller was preserved on VMnet8. The Windows client was used as a temporary test endpoint on SERVERS during the firewall test and was subsequently validated on LAN. Confirm its final VMware adapter assignment before treating the lab as fully restored.
+### 2026-10-22 • 05:05 to 05:36
+### Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+### Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+### Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+### Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+### Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+### Duration
+31 minutes (Planned: 30 minutes)
+
+### Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+### Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+### Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+### Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+### Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+### What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+### Duration
+104 minutes (Planned: 90 minutes)
+
+### Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+### Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+### Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+### Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+### Duration
+52 minutes (Planned: 30 minutes)
+
+### Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+Here is a concise project summary for 'Networking-Infrastructure-Engineering':
+
+---
+
+# Networking-Infrastructure-Engineering: Project Summary
+
+## 1. Project Story
+
+The "Networking-Infrastructure-Engineering" project is actively establishing a robust and secure virtual network environment, leveraging OPNsense as a central firewall and router. Our initial phase successfully focused on deploying foundational network services, demonstrating reliable client endpoint connectivity, DHCP allocation, and validated internet access. We then progressed to configuring additional network segments and rigorously testing granular firewall enforcement. This ongoing work has not only proven our capability to build critical infrastructure but has also illuminated a key challenge in advanced firewall rule management, specifically around rule cleanup and state persistence, which we are actively investigating to fortify operational resilience and security.
+
+## 2. Key Achievements
+
+*   **Core Network Services Established:** Successfully deployed and configured OPNsense to provide essential network services, including DHCPv4, for client endpoints on a dedicated LAN segment, ensuring seamless network integration and outbound connectivity.
+*   **Initial Network Segmentation:** Configured and validated an additional virtual network interface (SERVERS) on OPNsense, laying the groundwork for secure, isolated server environments and enabling more granular traffic control.
+*   **Granular Firewall Enforcement Demonstrated:** Verified the ability to implement precise firewall rules by creating, applying, and confirming specific traffic blocking (e.g., ICMP) through real-time log analysis, validating secure boundary controls.
+*   **Critical Operational Insight Gained:** Proactively identified and documented a significant challenge where network connectivity did not consistently restore after the removal of temporary firewall rules, providing a crucial learning opportunity for refining firewall state management and cleanup procedures.
+
+## 3. Lessons Learned
+
+*   **Firewall Rule Lifecycle Complexity:** We've learned that effective firewall management extends beyond initial rule creation to include meticulous cleanup and state table persistence. Thorough post-removal connectivity validation is as critical as post-application verification.
+*   **Importance of Comprehensive Testing:** This project has underscored the necessity of robust testing for both expected (allowed) and restricted (blocked) traffic flows, particularly after rule modifications, to ensure predictable and secure network behavior.
+*   **Proactive Problem Identification:** Methodical, step-by-step testing is vital for uncovering potential operational inconsistencies, such as firewall state issues, early in the development process, thereby preventing more significant challenges in later stages.
+
+## 4. Next Steps
+
+*   **Deep Dive into Firewall State:** Conduct a focused investigation into OPNsense's firewall state management mechanisms (e.g., `pfctl` diagnostics) to fully understand and resolve the observed connectivity restoration issue.
+*   **Standardize Firewall Rule Operations:** Develop and document robust, repeatable procedures for the consistent application, modification, and removal of firewall rules, ensuring proper state cleanup and network service continuity.
+*   **Advance Network Segmentation & Security:** Continue to build out and secure additional network segments, implementing sophisticated firewall policies to control inter-segment traffic and enhance the overall security posture of the infrastructure.
+
+## 5. Proof Points
+
+*   **Initial Client and Core Connectivity:**
+    *   `WIN11-CLIENT Installation Complete` (Screenshot)
+    *   `Win11 Client01 Single LAN DHCP Verified` (Screenshot)
+    *   `Win11 Client01 Outbound Connectivity Test` (Screenshot)
+    *   `OPNsense LAN DHCP Subnet` (Screenshot)
+    *   `OPNsense Kea DHCP Service Status (Active)` (Screenshot)
+    *   Engineering Log: `2026-10-22` Session Summary and Tasks Completed
+*   **Advanced Firewall Configuration and Enforcement:**
+    *   `OPNsense LAN Firewall Rules Baseline` (Screenshot)
+    *   `Servers Firewall Log` (Screenshot)
+    *   `Server Firewall Block Rule (Test)` (Screenshot)
+    *   `OPNsense ICMP Block Log Evidence` (Screenshot)
+    *   `OPNsense Firewall Test Results` (Screenshot)
+    *   Engineering Log: `2026-10-25` Session Summary and Tasks Completed
+
+---
+
+## Project timeline
+### 2026-10-25 • 08:45 to 09:14
+- Goal
+Confirm whether the existing OPNsense SERVERS interface at 192.168.10.1/24 can communicate with a test endpoint on VMnet1, then capture the result.
+
+- Definition of Done
+A test endpoint obtains or is assigned an appropriate address on 192.168.10.0/24, the endpoint can reach 192.168.10.1, and the result is recorded. If testing is blocked, document the exact blocker after one targeted troubleshooting attempt.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+An additional virtual network interface was configured on OPNsense, and endpoint-to-gateway connectivity was successfully demonstrated. Firewall enforcement was verified by creating and testing a temporary ICMP block rule, with traffic confirmation in live logs. However, an issue was identified where connectivity did not recover after the temporary firewall rule was removed, indicating a potential firewall cleanup problem requiring follow-up investigation.
+
+Tasks Completed:
+*   Validated the OPNsense SERVERS virtual network interface configuration at 192.168.10.1/24.
+*   Connected WIN11-CLIENT01 to VMnet1, establishing it as a temporary test endpoint.
+*   Confirmed successful endpoint-to-gateway connectivity from WIN11-CLIENT01 to OPNsense via ICMP, receiving 4/4 successful replies.
+*   Created and tested a temporary ICMP block rule on OPNsense to deny ping traffic.
+*   Confirmed that traffic was successfully blocked and recorded in the OPNsense firewall logs during the rule's active period.
+
+Issues Encountered:
+*   Connectivity from WIN11-CLIENT01 to the OPNsense gateway did not recover after the temporary ICMP block rule was removed.
+*   Repeated ping tests did not resolve the connectivity loss.
+*   It is suspected that firewall changes may have remained pending or unapplied, even after rule removal, preventing the restoration of network connectivity.
+
+Next Steps:
+*   Investigate the OPNsense firewall's state to determine why connectivity did not restore after rule removal (e.g., check `pfctl -sr` and `pfctl -si` for persistent rules or state table issues).
+*   Attempt to manually reapply firewall rules or restart the firewall service to clear any stuck or unapplied configurations.
+*   Re-establish and confirm endpoint-to-gateway connectivity from WIN11-CLIENT01.
+*   Document procedures for ensuring proper firewall rule cleanup and application consistency on OPNsense.
+
+Notes:
+None.
+
+- Working Story
+Configured an additional virtual network interface, demonstrated endpoint-to-gateway connectivity, verified firewall enforcement using live logs, identified a firewall cleanup issue requiring follow-up
+
+- Friction and AI Gaps
+Connectivity did not recover after the temporary firewall rule was removed, firewall changes may have remained pending, repeated ping tests did not resolve the issue
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 09:15:53
+Reviewer Notes: The SERVERS interface is assigned to em2 on VMnet1 with address 192.168.10.1/24. The temporary endpoint used 192.168.10.128/24. Gateway reachability was demonstrated successfully, and the temporary ICMP block was confirmed in firewall logs. The visible rules list no longer showed the temporary block, but connectivity restoration was not confirmed. Do not claim complete subnet isolation or successful final firewall cleanup.
+
+- Duration
+29 minutes (Planned: 60 minutes)
+
+- Notes
+### 2026-10-22 • 05:05 to 05:36
+- Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+- Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+- Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+- Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+- Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+- Duration
+31 minutes (Planned: 30 minutes)
+
+- Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+- Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+- Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+- Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+- Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+- What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+- Duration
+104 minutes (Planned: 90 minutes)
+
+- Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+- Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+- Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+- Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+- Duration
+52 minutes (Planned: 30 minutes)
+
+- Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Server Firewall Block Rule Test
+![Server Firewall Block Rule Test](../screenshots/2026-10-25_090814_server-firewall-block-rule-test.png)
+This screenshot shows the current configuration or system state being reviewed as part of the active project setup, validation, or troubleshooting work. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Servers Firewall Log
+![Servers Firewall Log](../screenshots/2026-10-25_085739_servers-firewall-log.png)
+This screenshot shows the current configuration or system state being reviewed as part of the active project setup, validation, or troubleshooting work. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Opnsense Kea Dhcp Service Status Active
+![Opnsense Kea Dhcp Service Status Active](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+This screenshot shows the working interface or project state that is currently being shaped to communicate the latest status, progress, and story. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-25 • 08:45 to 09:14
+### Goal
+Confirm whether the existing OPNsense SERVERS interface at 192.168.10.1/24 can communicate with a test endpoint on VMnet1, then capture the result.
+
+### Definition of Done
+A test endpoint obtains or is assigned an appropriate address on 192.168.10.0/24, the endpoint can reach 192.168.10.1, and the result is recorded. If testing is blocked, document the exact blocker after one targeted troubleshooting attempt.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+An additional virtual network interface was configured on OPNsense, and endpoint-to-gateway connectivity was successfully demonstrated. Firewall enforcement was verified by creating and testing a temporary ICMP block rule, with traffic confirmation in live logs. However, an issue was identified where connectivity did not recover after the temporary firewall rule was removed, indicating a potential firewall cleanup problem requiring follow-up investigation.
+
+Tasks Completed:
+*   Validated the OPNsense SERVERS virtual network interface configuration at 192.168.10.1/24.
+*   Connected WIN11-CLIENT01 to VMnet1, establishing it as a temporary test endpoint.
+*   Confirmed successful endpoint-to-gateway connectivity from WIN11-CLIENT01 to OPNsense via ICMP, receiving 4/4 successful replies.
+*   Created and tested a temporary ICMP block rule on OPNsense to deny ping traffic.
+*   Confirmed that traffic was successfully blocked and recorded in the OPNsense firewall logs during the rule's active period.
+
+Issues Encountered:
+*   Connectivity from WIN11-CLIENT01 to the OPNsense gateway did not recover after the temporary ICMP block rule was removed.
+*   Repeated ping tests did not resolve the connectivity loss.
+*   It is suspected that firewall changes may have remained pending or unapplied, even after rule removal, preventing the restoration of network connectivity.
+
+Next Steps:
+*   Investigate the OPNsense firewall's state to determine why connectivity did not restore after rule removal (e.g., check `pfctl -sr` and `pfctl -si` for persistent rules or state table issues).
+*   Attempt to manually reapply firewall rules or restart the firewall service to clear any stuck or unapplied configurations.
+*   Re-establish and confirm endpoint-to-gateway connectivity from WIN11-CLIENT01.
+*   Document procedures for ensuring proper firewall rule cleanup and application consistency on OPNsense.
+
+Notes:
+None.
+
+### Working Story
+Configured an additional virtual network interface, demonstrated endpoint-to-gateway connectivity, verified firewall enforcement using live logs, identified a firewall cleanup issue requiring follow-up
+
+### Friction and AI Gaps
+Connectivity did not recover after the temporary firewall rule was removed, firewall changes may have remained pending, repeated ping tests did not resolve the issue
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 09:15:53
+Reviewer Notes: The SERVERS interface is assigned to em2 on VMnet1 with address 192.168.10.1/24. The temporary endpoint used 192.168.10.128/24. Gateway reachability was demonstrated successfully, and the temporary ICMP block was confirmed in firewall logs. The visible rules list no longer showed the temporary block, but connectivity restoration was not confirmed. Do not claim complete subnet isolation or successful final firewall cleanup.
+
+### Duration
+29 minutes (Planned: 60 minutes)
+
+### Notes
+### 2026-10-22 • 05:05 to 05:36
+### Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+### Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+### Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+### Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+### Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+### Duration
+31 minutes (Planned: 30 minutes)
+
+### Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+### Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+### Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+### Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+### Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+### What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+### Duration
+104 minutes (Planned: 90 minutes)
+
+### Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+### Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+### Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+### Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+### Duration
+52 minutes (Planned: 30 minutes)
+
+### Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This project is an ongoing initiative to design, implement, and validate a secure and scalable virtual network infrastructure using OPNsense.
+
+---
+
+### 1. Project story
+
+The 'Networking-Infrastructure-Engineering' project is systematically building out a robust virtualized network environment, centralizing control and security through OPNsense. Initial efforts focused on establishing foundational network services, including configuring WAN and LAN interfaces, dynamic IP address allocation (DHCP), and DNS resolution. We successfully integrated a Windows 11 client, verifying its ability to obtain a DHCP lease, reach the LAN gateway, resolve public DNS, and establish outbound internet connectivity.
+
+A critical phase involved validating the OPNsense firewall's enforcement capabilities. We successfully demonstrated rule enforcement by implementing and logging temporary ICMP blocks, confirming expected traffic behavior. The network topology is currently expanding, with a new virtual network adapter assigned for a future 'SERVERS' interface, laying the groundwork for further segmentation and service deployment. The project emphasizes thorough verification at each step, albeit acknowledging areas for process optimization.
+
+### 2. Key achievements
+
+*   **Core Network Services Established:** Configured OPNsense with functional WAN and LAN interfaces, validated Kea DHCPv4 service, and ensured public DNS resolution.
+*   **Client Integration and Connectivity:** Successfully installed and configured a Windows 11 client (WIN11-CLIENT01), verifying its DHCP lease acquisition, LAN gateway reachability, and outbound HTTPS connectivity.
+*   **Firewall Enforcement Validated:** Demonstrated OPNsense's ability to enforce firewall rules through controlled ICMP blocking tests, with associated log evidence confirming traffic control.
+*   **Network Topology Expansion:** Added a third virtual network adapter and assigned it within OPNsense as a dedicated 'SERVERS' interface with a static IP, preparing for future network segmentation.
+
+### 3. Lessons learned
+
+*   **Refining Verification Workflows:** Identifying the need for a more efficient, milestone-based validation approach to avoid redundant checks and ensure steady progress. Repeated verification steps consumed more time than anticipated.
+*   **Navigating Platform Nuances:** Gained practical experience in distinguishing automatically generated OPNsense firewall rules from configurable interface rules, and understanding the interplay between VMware virtual networks and OPNsense interface assignments.
+*   **Streamlining Troubleshooting:** Encountered challenges with interface detection and mapping within OPNsense and VMware, highlighting the importance of direct console troubleshooting and methodical configuration checks.
+
+### 4. Next steps
+
+*   Validate controlled firewall behavior on the OPNsense LAN, specifically testing permitted and blocked traffic from WIN11-CLIENT01.
+*   Implement segmentation policies across established interfaces to secure and isolate network segments.
+*   Adopt and apply a more efficient, milestone-based validation approach for future tasks to streamline progress and minimize redundant checks.
+
+### 5. Proof points
+
+*   WIN11-CLIENT Installation Complete
+*   Win11 Client01 Single LAN DHCP Verified
+*   Win11 Client01 Outbound Connectivity Test
+*   OPNSense LAN Firewall Rules Baseline
+*   OPNsense ICMP Block Log Evidence
+*   OPNsense Firewall Test Results
+*   OPNSense LAN DHCP Subnet
+*   OPNsense Kea DHCP Service Status (Active)
+*   WAN DHCP Success
+*   WAN Default Route Validated
+
+## Project timeline
+### 2026-10-22 • 05:05 to 05:36
+- Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+- Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+- Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+- Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+- Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+- Duration
+31 minutes (Planned: 30 minutes)
+
+- Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+- Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+- Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+- Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+- Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+- What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+- Duration
+104 minutes (Planned: 90 minutes)
+
+- Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+- Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+- Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+- Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+- Duration
+52 minutes (Planned: 30 minutes)
+
+- Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Opnsense Kea Dhcp Service Status Active
+![Opnsense Kea Dhcp Service Status Active](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+This screenshot shows the working interface or project state that is currently being shaped to communicate the latest status, progress, and story. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-22 • 05:05 to 05:36
+### Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+### Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+### Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+### Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+### Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+### Duration
+31 minutes (Planned: 30 minutes)
+
+### Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+
+## Screenshot – OPNsense ICMP Block Log Evidence
+![OPNsense ICMP Block Log Evidence](../screenshots/2026-10-22_131421_opnsense-icmp-block-log-evidence.png)
+
+## Screenshot – OPNsense Firewall Test Results
+![OPNsense Firewall Test Results](../screenshots/2026-10-22_143528_opnsense-firewall-test-results.png)
+
+---
+
+## Session – 12:47 to 15:13
+### Goal
+Validate OPNsense firewall enforcement using a controlled test, verify expected versus actual network behavior, preserve the intended final firewall configuration.
+
+### Definition of Done
+Inspect existing LAN rules, perform at least one controlled firewall test, record expected and actual results, confirm final rule state, document the next action.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This phase established the foundational OPNsense networking baseline, configuring both WAN and LAN interfaces and validating essential network services such as DHCP and DNS, along with outbound client connectivity. Firewall rule enforcement was successfully demonstrated through temporary ICMP blocking and log analysis. The network topology was further extended with the addition of a third interface designated for a future server network.
+
+Tasks Completed:
+*   Configured the OPNsense WAN and LAN interfaces.
+*   Confirmed DHCP, DNS resolution, and outbound internet connectivity for client devices.
+*   Validated firewall rule enforcement by implementing and logging a temporary ICMP block.
+*   Added a third virtual network adapter within VMware and mapped it to VMnet1.
+*   Assigned the new virtual adapter (em2) within OPNsense to the 'SERVERS' interface.
+*   Configured the 'SERVERS' interface with the intended static IP address of 192.168.10.1/24.
+
+Issues Encountered:
+*   The expected VMnet3 option was unexpectedly unavailable in the OPNsense adapter dropdown list, necessitating alternative mapping.
+*   Interface detection and subsequent assignment within OPNsense required direct console troubleshooting due to initial challenges.
+*   Project progress was slower than anticipated due to repeated configuration checks and verification steps.
+
+Next Steps:
+*   Adopt a more efficient, milestone-based validation approach for future tasks to ensure steady progress and minimize redundant checks.
+
+Notes:
+Observations indicate that prior procedural steps involved repeating previously completed verification, revisiting known interface and VMware settings, and a lack of consistent comparison of new screenshots against established evidence before proceeding. This led to prioritizing repeated checking over moving to the next deliverable, highlighting an area for process improvement in future engineering documentation workflows.
+
+### Working Story
+Established the OPNsense networking baseline, demonstrated firewall rule enforcement with logged evidence, extended the topology with a third interface for a future server network, adopted a more efficient milestone-based validation approach
+
+### Friction and AI Gaps
+VMnet3 was unavailable in the OPNsense adapter dropdown, repeated configuration checks consumed time, interface detection and assignment required console troubleshooting, project progress was slower than planned
+
+### What the AI Missed
+Repeated previously completed verification steps, revisited known interface and VMware settings, did not consistently compare new screenshots against established evidence before giving the next instruction, prioritized repeated checking over moving to the next deliverable
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 15:14:20
+Reviewer Notes: WAN remains on em0 / VMnet8, LAN remains on em1 / VMnet2, SERVERS is assigned to em2 / VMnet1, the intended SERVERS address is 192.168.10.1/24, the Windows client’s DHCP/DNS/outbound connectivity and the temporary ICMP enforcement test were previously validated. End-to-end connectivity for the new SERVERS network has not yet been tested, and the current LAN allow rules remain broad. Do not report multi-zone isolation as complete.
+
+### Duration
+104 minutes (Planned: 90 minutes)
+
+### Notes
+Prioritize implementation over repeated checks, reuse existing evidence, validate once at meaningful milestones, defer VLANs and advanced monitoring to the CyberOps Sandbox unless required for the core project exit criteria
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+### Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+### Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+### Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+### Duration
+52 minutes (Planned: 30 minutes)
+
+### Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+Networking-Infrastructure-Engineering is currently in progress, with progress and evidence captured in the project logs and screenshots. The work centers on delivering practical outcomes, documenting the engineering process, and making progress easy to review. Key lessons include keeping documentation close to delivery, recording proof as work progresses, and making handoff notes explicit.
+
+## Project timeline
+### 2026-10-22 • 05:05 to 05:36
+- Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+- Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+- Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+- Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+- Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+- Duration
+31 minutes (Planned: 30 minutes)
+
+- Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+- Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+- Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+- Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+- Duration
+52 minutes (Planned: 30 minutes)
+
+- Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Opnsense Kea Dhcp Service Status Active
+![Opnsense Kea Dhcp Service Status Active](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+This screenshot shows the working interface or project state that is currently being shaped to communicate the latest status, progress, and story. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-22 • 05:05 to 05:36
+### Goal
+Complete Windows 11 initial setup on WIN11-CLIENT01, verify that OPNsense assigns a valid DHCP lease, test gateway connectivity if time permits.
+
+### Definition of Done
+Windows reaches the desktop, client network configuration is recorded, DHCP lease is verified or a specific failure is identified, next troubleshooting step is documented.
+
+### Goal Achieved
+✅ Yes
+
+
+Summary:
+The Windows 11 client is receiving a DHCP lease from OPNsense, can reach the LAN gateway, resolve public DNS names, reach the internet by IP, and establish an HTTPS connection.
+
+Tasks Completed:
+Configured OPNsense Kea DHCPv4 for LAN subnet, configured DHCP address pool, connected Windows 11 client to VMnet2, verified DHCP lease assignment, verified LAN gateway connectivity, validated external IP connectivity, verified public DNS resolution, validated outbound HTTPS connectivity, reviewed default IPv4 and IPv6 LAN firewall rules, identified default allow rules requiring segmentation testing
+
+Issues Encountered:
+DHCP configuration verification required multiple checks, distinguishing automatically generated firewall rules from editable interface rules, default LAN rules allow broad traffic and do not yet demonstrate segmentation, Windows 11 client setup added time to the session
+
+Next Steps:
+Validate controlled firewall behavior on the OPNsense LAN, begin testing permitted and blocked traffic from WIN11-CLIENT01
+
+Notes:
+
+
+
+### Working Story
+Implemented and validated a virtual firewall LAN, configured DHCP address assignment, verified gateway reachability, validated external IP connectivity and public DNS resolution, confirmed outbound HTTPS connectivity, identified default firewall permissions that require further testing.
+
+### Friction and AI Gaps
+Distinguishing automatically generated firewall rules from editable interface rules, understanding how VMware virtual networks connect to OPNsense interfaces, confirming the client received its configuration from the intended DHCP server.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-22 05:39:24
+Reviewer Notes: The Windows 11 client has successfully obtained a DHCP lease on the isolated LAN. Connectivity tests passed, but firewall segmentation and deny-rule behavior remain unverified.
+
+### Duration
+31 minutes (Planned: 30 minutes)
+
+### Notes
+Client hostname WIN11-CLIENT01, client LAN address 192.168.20.165/24, DHCP server and DNS server 192.168.20.1, default gateway 192.168.20.1, OPNsense WAN 192.168.148.129 on VMnet8, domain controller NS-DC01 at 192.168.148.10 remains on VMnet8. Preserve the existing domain controller network placement.
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+### Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+### Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+### Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+### Duration
+52 minutes (Planned: 30 minutes)
+
+### Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This project is currently `In progress`.
+
+---
+
+### 1. Project story
+This project focuses on establishing and securing a robust networking infrastructure using OPNsense. It involves configuring core network services like DHCP, validating connectivity, and preparing a lab environment for advanced security and firewall policy testing. Recent efforts have centered on configuring and activating the Kea DHCPv4 service for the LAN, followed by deploying a dedicated Windows 11 client to validate these foundational network services. The ongoing work aims to build a comprehensive, functional, and testable network environment.
+
+### 2. Key achievements
+*   **Kea DHCPv4 Service Configuration:** Successfully configured the foundational Kea DHCPv4 service on OPNsense 26.7 for the LAN, defining a dedicated subnet (`192.168.20.0/24`) and address pool (`192.168.20.100–192.168.20.199`).
+*   **Service Activation:** Activated the Kea DHCPv4 service, confirming its active status and laying the groundwork for client IP address assignment.
+*   **Client Endpoint Deployment:** Deployed a new Windows 11 client endpoint (`WIN11-CLIENT01`) within the lab, integrating it into the host-only network (`VMnet2`) for dedicated testing purposes.
+*   **Lab Expansion & Preservation:** Established a robust testing foundation, preserving existing infrastructure (Windows Server domain controller, OPNsense WAN/LAN configuration) while expanding lab capabilities for future validation of DHCP, gateway connectivity, firewall policies, and packet analysis.
+
+### 3. Lessons learned
+*   **Importance of Incremental Validation:** Even seemingly minor configuration changes, like enabling a DHCP service, require immediate application and verification before proceeding to subsequent steps. Initial sessions highlighted that time constraints can easily prevent critical validation, emphasizing the need for focused, self-contained validation steps to ensure service integrity.
+*   **Structured Lab Expansion:** Introducing new client endpoints, while enhancing testing capabilities, must be carefully integrated to avoid disrupting existing network configurations. The process confirmed that new virtual machines can be deployed without affecting core services, provided they are connected to the correct network segments and existing configurations are explicitly confirmed as preserved.
+
+### 4. Next steps
+*   **Complete DHCP Validation:** Test DHCP address assignment for the `WIN11-CLIENT01` to confirm successful IP lease from the OPNsense Kea DHCPv4 service.
+*   **Validate Core Connectivity:** Verify gateway connectivity, DNS resolution, and routing from the `WIN11-CLIENT01` to ensure full network reachability.
+*   **Advance Security Testing:** Utilize `WIN11-CLIENT01` as a primary endpoint for comprehensive firewall policy validation and targeted packet analysis to observe traffic flows and security enforcement.
+*   **Refine Network Topology Documentation:** Update network diagrams to reflect the newly integrated client and any future architectural changes.
+
+### 5. Proof points
+*   **Screenshot: OPNSense LAN DHCP Subnet** - Shows the configured Kea DHCPv4 LAN subnet with its defined address pool.
+*   **Screenshot: OPNsense Kea DHCP Service Status (Active)** - Visual confirmation of the Kea DHCPv4 service successfully enabled and running on OPNsense.
+*   **Project Log (2026-10-20, Session 05:57)** - Details the initial configuration steps for the Kea DHCPv4 service, including interface selection and subnet creation.
+*   **Project Log (2026-10-20, Session 16:26)** - Documents the successful deployment and configuration of the `WIN11-CLIENT01` virtual machine, ready for network service validation.
+
+## Project timeline
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+- Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+- Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+- Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+- Duration
+52 minutes (Planned: 30 minutes)
+
+- Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Opnsense Kea Dhcp Service Status Active
+![Opnsense Kea Dhcp Service Status Active](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+This screenshot shows the working interface or project state that is currently being shaped to communicate the latest status, progress, and story. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – OPNsense Kea DHCP Service Status (Active)
+![OPNsense Kea DHCP Service Status (Active)](../screenshots/2026-10-20_163430_opnsense-kea-dhcp-service-status-active.png)
+
+---
+
+## Session – 16:26 to 17:18
+### Goal
+Apply and verify the existing OPNsense Kea DHCPv4 LAN configuration.
+
+### Definition of Done
+Apply the pending Kea DHCPv4 settings, confirm the service starts without configuration errors, verify the LAN subnet entry persists with the intended address pool, record the service status and any remaining blockers. Do not claim successful DHCP operation until a client lease is verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A new Windows 11 client endpoint, `WIN11-CLIENT01`, has been successfully deployed and configured within the lab environment. This expansion provides a dedicated client for comprehensive network and security testing, establishing the foundation for validating DHCP address assignment, gateway connectivity, and preparing for future firewall policy validation and packet analysis. The existing Windows Server domain controller and OPNsense network configuration were preserved without modification.
+
+Tasks Completed:
+*   Created a new virtual machine named `WIN11-CLIENT01` in VMware Workstation.
+*   Configured virtual hardware for `WIN11-CLIENT01`:
+    *   RAM: 4 GB
+    *   vCPUs: 2
+    *   Virtual Disk: 64 GB
+*   Connected the `WIN11-CLIENT01` virtual machine to the `VMnet2` (Host-only) network.
+*   Installed the Windows 11 operating system on `WIN11-CLIENT01`.
+*   Assigned the hostname `WIN11-CLIENT01` to the newly installed client.
+*   Confirmed that the existing Windows Server domain controller and OPNsense network configuration were preserved and unaffected by the new client deployment.
+
+Issues Encountered:
+*   None.
+
+Next Steps:
+*   Test DHCP address assignment for `WIN11-CLIENT01`.
+*   Validate gateway connectivity from `WIN11-CLIENT01`.
+*   Utilize `WIN11-CLIENT01` for firewall policy validation.
+*   Conduct packet analysis involving traffic from `WIN11-CLIENT01`.
+
+Notes:
+*   The addition of `WIN11-CLIENT01` significantly enhances the lab's capability to simulate real-world client interactions for network and security testing scenarios.
+
+### Working Story
+Expanded the lab with a dedicated Windows client endpoint, established the foundation for testing DHCP address assignment and gateway connectivity, preserved the existing domain controller, prepared the environment for firewall policy validation and packet analysis.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 17:20:17
+Reviewer Notes: The client VM exists and Windows 11 installation completed, the VM is configured for VMnet2 Host-only, the DHCP pool is configured on OPNsense but a client lease has not been confirmed, routing and DNS from the Windows client remain unverified, firewall segmentation testing remains outstanding.
+
+### Duration
+52 minutes (Planned: 30 minutes)
+
+### Notes
+Windows client configuration is incomplete, no DHCP lease evidence collected, no client-side connectivity tests performed, continue with the existing lab topology without moving the domain controller or adding another network adapter.
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This 'Networking-Infrastructure-Engineering' project is actively building out a robust virtualized network environment using OPNsense 26.7. The initial phase successfully established foundational management connectivity by resolving critical IP address conflicts, restoring HTTPS access to the firewall from the host. Building on this, the current focus is on configuring essential network services, specifically laying the groundwork for dynamic IP address management on the LAN segment using Kea DHCPv4. The project is progressing through systematic configuration and validation to ensure a stable and functional core network infrastructure.
+
+### 1. Project story
+
+This project entails the design and implementation of a virtualized network infrastructure centered around OPNsense 26.7. It commenced with establishing a stable management plane, which involved critical troubleshooting to resolve an IP address conflict preventing HTTPS access to the firewall. With management access secured, the current phase is dedicated to configuring core network services. This includes the initial setup of the Kea DHCPv4 service to manage IP address assignments within the isolated LAN environment, ensuring a structured and functional network foundation is in place. The project is actively moving towards client connectivity validation and further service integration.
+
+### 2. Key achievements
+
+*   **Critical IP Conflict Resolution:** Successfully identified and resolved an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter, reconfiguring the host to 192.168.20.2/24.
+*   **Restored Management Access:** Verified and restored reliable HTTPS management access to the OPNsense firewall from the physical host on port 443.
+*   **Core Network Configuration Verification:** Confirmed OPNsense interface assignments (WAN: `em0`@`192.168.148.129/24`, LAN: `em1`@`192.168.20.1/24`) and validated internal routing tables.
+*   **DHCP Service Initial Setup:** Performed foundational configuration of the Kea DHCPv4 service on OPNsense, selecting the LAN interface and defining an address pool (192.168.20.100–192.168.20.199) for the 192.168.20.0/24 LAN subnet.
+
+### 3. Lessons learned
+
+*   **Prioritize Foundational Connectivity:** Establishing and thoroughly validating management connectivity is paramount before proceeding with advanced service configurations. Unresolved conflicts at this layer can block subsequent progress.
+*   **Systematic Troubleshooting is Key:** When facing connectivity issues in virtualized environments, a methodical approach is essential to distinguish between host-level network configuration problems and guest (firewall) service configuration issues.
+*   **Incremental Configuration and Validation:** For complex network services like DHCP, configure settings incrementally and plan for immediate validation of operational status. Delaying validation can complicate debugging when issues arise.
+*   **Document Initial State:** Recording existing, even incomplete, configurations before making changes provides a valuable baseline for troubleshooting and understanding the environment's evolution.
+
+### 4. Next steps
+
+*   Apply the configured Kea DHCPv4 settings on OPNsense and validate the service's operational status by testing client IP address assignments on the LAN.
+*   Connect a Windows client to the isolated VMnet2 lab network, then validate DHCP addressing, default gateway assignment, and test LAN gateway reachability, including DNS configuration.
+*   Record DNS configuration and identify any remaining client connectivity issues.
+
+### 5. Proof points
+
+*   OPNSense LAN DHCP Subnet
+*   WAN DHCP Success
+*   WAN Default Route Validated
+*   Network Topology Plan (Current)
+*   WAN External Connectivity
+*   WAN DNS Resolution
+*   VMware DHCP Investigation
+*   OPNsense Live Boot
+
+## Project timeline
+### 2026-10-20 • 05:57 to 06:07
+- Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+- Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+- Duration
+10 minutes (Planned: 20 minutes)
+
+- Notes
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: OPNSense LAN DHCP Subnet
+![OPNSense LAN DHCP Subnet](../screenshots/2026-10-20_060316_opnsense-lan-dhcp-subnet.png)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-20 • 05:57 to 06:07
+### Goal
+Verify the existing OPNsense LAN DHCP configuration and record its current state.
+
+### Definition of Done
+Confirm whether LAN DHCP is enabled, verify the configured DHCP address pool, record any configuration issue or blocker, identify the next validation step.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Initial configuration of the Kea DHCPv4 service on OPNsense 26.7 was performed, including verification of network interfaces and creation of a DHCP subnet with an address pool for the LAN network.
+
+Tasks Completed:
+1.  Accessed the OPNsense 26.7 web interface through the host-only LAN network.
+2.  Verified the LAN interface (192.168.20.1/24) and host adapter (192.168.20.2/24) network configurations.
+3.  Inspected Kea DHCPv4 settings, confirming the service was initially disabled with no interface selected.
+4.  Inspected subnet configuration, finding zero existing subnet entries.
+5.  Created a LAN subnet entry for 192.168.20.0/24 with the address pool 192.168.20.100–192.168.20.199.
+6.  Selected the LAN interface for the Kea DHCPv4 service.
+7.  Checked the service 'Enabled' option for Kea DHCPv4.
+
+Issues Encountered:
+1.  The existing DHCP configuration was incomplete upon inspection.
+2.  Required identification of the correct Kea DHCPv4 settings and subnet configuration pages within the OPNsense interface.
+3.  Limited session time prevented applying the configuration and validating service operation.
+
+Next Steps:
+1.  Apply the configured Kea DHCPv4 settings.
+2.  Validate the operation of the DHCPv4 service on the LAN interface by testing client IP address assignments.
+
+Notes:
+The work focused on the foundational setup of Kea DHCPv4 to provide IP addresses within the 192.168.20.0/24 network segment. The host-only network configuration was essential for initial access and verification.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+Existing DHCP configuration was incomplete, the correct Kea DHCPv4 settings and subnet pages needed to be identified, limited session time prevented applying the configuration and validating service operation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-20 06:08:27
+Reviewer Notes: The OPNsense WAN interface remains em0 at 192.168.148.129/24, the LAN interface remains em1 at 192.168.20.1/24, the physical Windows host's VMnet2 adapter is 192.168.20.2/24, VMnet2 remains host-only on 192.168.20.0/24. The Kea DHCPv4 subnet entry was created with pool 192.168.20.100–192.168.20.199. The latest screenshot shows LAN selected and the main service Enabled checkbox checked, but the Apply button is still present. Application of these service settings and successful DHCP operation are not yet verified.
+
+### Duration
+10 minutes (Planned: 20 minutes)
+
+### Notes
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+Here is a concise project summary for 'Networking-Infrastructure-Engineering', with an 'In progress' status.
+
+---
+
+# Networking-Infrastructure-Engineering Project Summary
+
+## 1. Project story
+
+This 'Networking-Infrastructure-Engineering' project is actively building a robust, virtualized network lab centered around an OPNsense firewall. Currently in progress, the work involves establishing foundational network connectivity, resolving critical infrastructure conflicts, and validating core services to support a segregated lab environment. Initial efforts focused on bringing OPNsense WAN online, followed by detailed troubleshooting and configuration of the LAN segment to prepare for client integration. The project is systematically addressing network architecture challenges to ensure a stable and functional base for further development.
+
+## 2. Key achievements
+
+*   **OPNsense WAN Operationalization:** Successfully configured OPNsense for dynamic WAN connectivity (DHCP), validated its default route, external reachability, and DNS resolution capabilities.
+*   **Critical IP Conflict Resolution:** Identified and rectified a significant IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the Windows host's VMnet2 adapter by reconfiguring the host's adapter to 192.168.20.2/24.
+*   **Restored Firewall Management Access:** Re-established essential HTTPS management connectivity to the OPNsense web interface from the physical Windows host post-conflict resolution.
+*   **Core Network Verification:** Confirmed OPNsense interface assignments (WAN: `em0` at 192.168.148.129/24; LAN: `em1` at 192.168.20.1/24), validated its routing table, and confirmed the HTTPS service is actively listening on the LAN interface.
+*   **Preservation of Existing Infrastructure:** Ensured no alterations were made to existing domain controller configurations or unrelated firewall rules, maintaining environment stability during critical network changes.
+
+## 3. Lessons learned
+
+*   **Systematic Diagnostic Importance:** Highlighted the absolute necessity of systematic, layered troubleshooting and thorough verification of all virtual network components and firewall settings in complex virtual environments.
+*   **Host-VM Network Synergy:** Emphasized that host-level virtual network adapter configurations are just as critical as guest VM settings, particularly for preventing IP conflicts and ensuring proper network segregation.
+*   **Focused Troubleshooting Strategy:** Gained experience in differentiating and isolating issues originating from the host network versus those within the virtualized firewall configuration, streamlining diagnostic efforts.
+*   **Phased Validation in Complex Systems:** Reinforced the value of a phased approach to validation, acknowledging that comprehensive testing (e.g., DHCP functionality) may span multiple sessions due to underlying issues or time constraints.
+
+## 4. Next steps
+
+The immediate priority is to validate DHCP functionality on the OPNsense LAN interface. Following this, future steps will include:
+
+*   Identifying or creating a dedicated Windows client VM and integrating it into the VMnet2 lab network.
+*   Validating DHCP lease assignment, default gateway, and DNS configuration from the client VM's perspective.
+*   Testing LAN gateway reachability, firewall policy effectiveness, and external connectivity from the client.
+*   Capturing final evidence of successful client integration and overall network functionality.
+
+## 5. Proof points
+
+*   **Detailed Engineering Log (2026-10-16):** Provides comprehensive documentation of the IP conflict's identification, systematic resolution steps, and subsequent successful HTTPS management connectivity verification from the host.
+*   **AI Peer Review Confirmation (2026-10-16):** Offers independent verification of OPNsense interface status, default route presence, HTTPS service listener, the Windows host's VMnet2 IP address change, and successful TCP connectivity to the OPNsense LAN management interface (192.168.20.1:443).
+*   **Initial WAN Setup Screenshots (2026-10-13):** Captions like "WAN DHCP Success", "WAN Default Route Validated", "WAN External Connectivity", and "WAN DNS Resolution" visibly demonstrate the successful initial configuration and validation of OPNsense's external network connectivity.
+*   **Network Topology Plan Screenshot (2026-10-13):** "Network Topology Plan (Current)" illustrates ongoing architectural planning and design for the environment.
+
+## Project timeline
+### 2026-10-16 • 05:24 to 05:51
+- Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+- Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+- Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+- Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+- Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+- Duration
+26 minutes (Planned: 60 minutes)
+
+- Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: WAN DNS Resolution
+![WAN DNS Resolution](../screenshots/2026-10-13_144046_wan-dns-resolution.png)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-16 • 05:24 to 05:51
+### Goal
+Connect a Windows client to the isolated VMnet2 lab network, validate DHCP addressing and default gateway assignment, test LAN gateway reachability, record DNS configuration and identify any remaining client connectivity issues.
+
+### Definition of Done
+Windows client connected to VMnet2, DHCP lease and subnet verified, default gateway confirmed as 192.168.20.1, DNS configuration recorded, gateway connectivity tested, results and limitations documented, next technical action identified.
+
+### Goal Achieved
+❌ No
+
+Summary:
+Systematic network troubleshooting was performed on a virtualized OPNsense 26.7 firewall environment to resolve critical management connectivity issues. The primary problem identified was an IP address conflict between the OPNsense LAN interface (192.168.20.1/24) and the VMware VMnet2 host-only adapter on the Windows host. This conflict was successfully resolved by reconfiguring the host's VMnet2 adapter to 192.168.20.2/24. Post-resolution, OPNsense interface assignments, routing, and HTTPS listener functionality were verified, and successful TCP connectivity to the firewall's web interface on port 443 was established from the physical Windows host. This work preserved the existing domain controller configuration and restored essential HTTPS reachability to the firewall.
+
+Tasks Completed:
+*   **OPNsense Interface Verification:** Confirmed OPNsense 26.7 interface assignments:
+    *   WAN: `em0` at `192.168.148.129/24`
+    *   LAN: `em1` at `192.168.20.1/24`
+*   **VMware Network Configuration Review:** Reviewed the VMware `VMnet2` host-only network configuration on the Windows host.
+*   **IP Address Conflict Resolution:**
+    *   Identified an IP address conflict between the OPNsense LAN interface (`192.168.20.1`) and the Windows host's `VMnet2` adapter.
+    *   Resolved the conflict by changing the Windows host's `VMnet2` adapter IP address from `192.168.20.1` to `192.168.20.2`.
+*   **OPNsense System Verification:**
+    *   Verified OPNsense routing table.
+    *   Confirmed OPNsense HTTPS listener is active on the LAN interface.
+    *   Confirmed LAN interface status is active.
+*   **Connectivity Testing:** Successfully tested TCP connectivity from the physical Windows host to the OPNsense LAN interface (`192.168.20.1`) on port `443` (HTTPS).
+
+Issues Encountered:
+*   **IP Address Conflict:** A critical IP address conflict existed where the Windows host's `VMnet2` adapter shared the same IP address (`192.168.20.1`) as the OPNsense LAN interface, preventing proper network communication.
+*   **HTTPS Access Timeouts:** Initial attempts to access the OPNsense web interface via HTTPS timed out directly as a symptom of the underlying IP address conflict.
+*   **Troubleshooting Complexity:** Distinguishing between host network configuration issues and firewall configuration issues required focused troubleshooting efforts.
+
+Next Steps:
+*   Validate DHCP functionality on the OPNsense LAN interface.
+
+Notes:
+*   No AI-related errors or misses were identified during this process.
+*   The troubleshooting process emphasized systematic verification of virtual network components and firewall configurations.
+*   The environment involved OPNsense 26.7, a VMware virtual machine, and a physical Windows host.
+*   Preservation of existing domain controller configuration was a key consideration; no changes to the DC were performed or required.
+
+### Working Story
+Systematic network troubleshooting, verification of virtual network and interface assignments, identification and correction of an IP address conflict, preservation of the existing domain controller configuration, restoration of HTTPS reachability to the firewall, clear separation between verified results and unfinished validation.
+
+### Friction and AI Gaps
+The Windows host adapter initially used the same IP address as the OPNsense LAN interface, initial HTTPS access timed out, distinguishing host network configuration from firewall configuration required additional troubleshooting, time constraints prevented completion of DHCP validation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-16 05:52:08
+Reviewer Notes: The OPNsense WAN and LAN interfaces remain configured as intended, the default route through 192.168.148.2 is present, the LAN interface is active, the HTTPS service is listening, the Windows host's VMnet2 adapter now uses 192.168.20.2/24, TCP connectivity to 192.168.20.1:443 succeeds. No firewall rules or domain controller network settings were intentionally changed during this session.
+
+### Duration
+26 minutes (Planned: 60 minutes)
+
+### Notes
+VMware VMnet2 is configured as host-only with subnet 192.168.20.0/24, the VMware host adapter is connected, VMware's local DHCP service is disabled for VMnet2 because OPNsense is intended to provide DHCP. A dedicated Windows client VM has not been identified or created. DHCP lease validation, client gateway testing, DNS validation, firewall policy testing, and final evidence capture remain incomplete.
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This summary outlines the current progress and key insights from the ongoing 'Networking-Infrastructure-Engineering' project.
+
+---
+
+# Networking-Infrastructure-Engineering: Project Summary
+
+## 1. Project Story
+
+This 'Networking-Infrastructure-Engineering' project is currently in progress, focused on establishing a robust and verifiable network foundation using OPNsense within a VMware virtualized environment. The initial phase successfully addressed critical connectivity challenges, specifically resolving an incorrect virtual network adapter mapping that prevented the OPNsense firewall from obtaining WAN access. By systematically auditing and correcting the VMware-to-OPNsense interface assignments, a stable WAN DHCP lease was secured, routing was validated, and both external IP connectivity and DNS resolution were confirmed. This foundational work establishes a critical baseline for subsequent network implementation phases, ensuring a reproducible and functional environment.
+
+## 2. Key Achievements
+
+*   **Resolved Core Connectivity Issues:** Successfully identified and rectified an incorrect OPNsense WAN/LAN interface mapping within the VMware environment, which was the root cause of initial network failures.
+*   **Established WAN Functionality:** Achieved successful WAN DHCP lease acquisition, verified the default gateway, and confirmed full external IP connectivity.
+*   **Validated Core Network Services:** Confirmed robust DNS resolution for external domains through the local resolver.
+*   **Documented Topology:** Created a documented network topology plan, providing a clear reference for the current state and future expansion.
+*   **Systematic Troubleshooting Applied:** Demonstrated effective infrastructure troubleshooting methodology by correlating virtual adapter MAC addresses with OPNsense interfaces to isolate the problem.
+
+## 3. Lessons Learned
+
+*   **Prioritize Topology Validation:** The paramount importance of conducting a comprehensive network topology audit, including correlating virtual network adapter assignments (e.g., VMware vNICs to OPNsense `emX` interfaces and their MAC addresses), *before* troubleshooting service-specific issues like DHCP.
+*   **Systematic Approach:** Adopting a systematic infrastructure troubleshooting methodology is crucial to avoid premature assumptions and inefficient diagnostic efforts.
+*   **Session Management:** The need for stricter time boundaries and clear stopping criteria for troubleshooting sessions to enhance efficiency and prevent fatigue from prolonged, less focused efforts.
+
+## 4. Next Steps
+
+*   Proceed with the subsequent phases of OPNsense configuration and broader network implementation, building upon the now-verified and stable network foundation.
+*   Integrate lessons learned regarding session management by implementing stricter time boundaries and earlier stopping criteria for future troubleshooting and development activities.
+
+## 5. Proof Points
+
+*   **WAN DHCP Success:** Screenshot `2026-10-13_142955_wan-dhcp-success.png` confirms the successful acquisition of a WAN DHCP lease (`192.168.148.129/24`).
+*   **Validated Default Route:** Screenshot `2026-10-13_143146_wan-default-route-validated.png` confirms the default route via `192.168.148.2`, with successful gateway reachability (4/4 replies).
+*   **Current Network Topology:** Screenshot `2026-10-13_143619_network-topology-plan-current.png` depicts the documented network topology.
+*   **External Connectivity:** Screenshot `2026-10-13_143905_wan-external-connectivity.png` demonstrates successful external IP connectivity to `1.1.1.1` (4/4 replies).
+*   **DNS Resolution:** Screenshot `2026-10-13_144046_wan-dns-resolution.png` validates successful DNS resolution for `example.com`.
+*   **Interface Correction:** Resolution achieved by reassigning OPNsense WAN interface to `em0` on `VMnet8` and LAN interface to `em1` on `VMnet2`, based on MAC address correlation.
+
+## Project timeline
+### 2026-10-13 • 14:00 to 14:42
+- Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+- Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+- Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+- Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+- What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+- Duration
+42 minutes (Planned: 60 minutes)
+
+- Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: WAN DNS Resolution
+![WAN DNS Resolution](../screenshots/2026-10-13_144046_wan-dns-resolution.png)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-13 • 14:00 to 14:42
+### Goal
+Audit the actual VMware and OPNsense network configuration, verify virtual NIC-to-network mappings, analyze the existing WAN DHCP packet capture in Wireshark if available, reassess project progress, establish a revised implementation sequence.
+
+### Definition of Done
+Produce a verified or explicitly unresolved topology, distinguish configured capabilities from tested capabilities, record Wireshark findings if the capture is available, identify the next evidence-based action, update the project handoff.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+This session successfully addressed and resolved critical network connectivity issues for an OPNsense virtual appliance. The primary cause was identified as an incorrect mapping of VMware virtual network adapters to OPNsense WAN/LAN interfaces. After systematically correcting these assignments, full network functionality was restored. WAN DHCP was successfully obtained, routing verified, and external IP connectivity confirmed. DNS resolution was also validated. The session concluded with a documented network topology, establishing a stable and reproducible foundation for subsequent implementation phases.
+
+Tasks Completed:
+*   Audited VMware virtual network adapter assignments for the OPNsense VM.
+*   Identified and corrected the incorrect OPNsense WAN/LAN interface mapping:
+    *   Reassigned the WAN interface to `em0` on `VMnet8`.
+    *   Reassigned the LAN interface to `em1` on `VMnet2`.
+*   Successfully obtained a WAN DHCP lease: `192.168.148.129/24`.
+*   Verified the default gateway: `192.168.148.2`.
+*   Confirmed gateway reachability with 4/4 replies and 0% packet loss.
+*   Confirmed external IP connectivity to `1.1.1.1` with 4/4 replies and 0% packet loss.
+*   Validated DNS resolution for `example.com` through the local resolver.
+*   Documented the current network topology and addressing plan.
+
+Issues Encountered:
+*   Initial troubleshooting efforts prematurely focused on DHCP behavior before a complete validation of the network topology, including correlating VMware adapter MAC addresses with OPNsense interface names.
+*   Incorrect assumptions were made regarding VMware virtual network adapter ordering and the corresponding OPNsense `emX` interface names.
+*   The troubleshooting session extended without predefined time boundaries or clear stopping criteria, leading to prolonged diagnostic attempts and increased fatigue.
+*   The troubleshooting sequence was inefficient due to a failure to prioritize a systematic topology audit upfront.
+
+Next Steps:
+*   Proceed with the next phase of OPNsense configuration and network implementation, building upon the established and verified network foundation.
+*   Implement stricter time boundaries and earlier stopping criteria for future troubleshooting sessions to improve efficiency.
+
+Notes:
+This session highlighted the critical importance of a systematic infrastructure troubleshooting methodology, particularly the absolute necessity of validating the complete network topology and interface mappings *before* diving into service-specific issues like DHCP. The key to resolution was identifying and correcting the virtual interface mapping error. Establishing a reproducible topology reference and meticulously documenting the current state are essential for future work and maintaining a stable environment. Lessons learned include prioritizing a comprehensive topology audit, correlating MAC addresses, and implementing better session management practices (e.g., time boxing, defined stopping points) to prevent extended, less effective diagnostic efforts.
+
+### Working Story
+Systematic infrastructure troubleshooting, validating network topology before investigating individual services, identifying and correcting a virtual interface mapping error, restoring WAN DHCP and routing, proving gateway reachability and external connectivity, validating DNS resolution, establishing a reproducible topology reference, preserving a working state for the next implementation phase.
+
+### Friction and AI Gaps
+Troubleshooting DHCP before validating the complete network topology, incorrect assumptions about VMware adapter ordering and OPNsense interface names, extended troubleshooting without a firm time boundary, fatigue from repeated diagnostic attempts.
+
+### What the AI Missed
+The initial troubleshooting sequence focused too long on DHCP behavior before matching VMware adapter MAC addresses to OPNsense interfaces, the topology audit should have been performed first, the session needed stronger time boundaries and earlier stopping criteria.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-13 14:43:35
+Reviewer Notes: The initial WAN DHCP failure was traced to a mismatch between VMware virtual network assignments and OPNsense interface roles. MAC address comparison established that em0 corresponded to Adapter 1 on VMnet8 and em1 corresponded to Adapter 2 on VMnet2. Reassigning WAN to em0 and LAN to em1 resolved the WAN addressing issue. The routing table showed a default route through 192.168.148.2, gateway and external IP connectivity tests each returned 4/4 replies, and the DNS query for example.com returned two IPv4 addresses. These results validate the firewall's WAN-side foundation but do not yet establish LAN client connectivity, firewall segmentation, or end-to-end client DNS.
+
+### Duration
+42 minutes (Planned: 60 minutes)
+
+### Notes
+The existing domain controller NS-DC01 remains at 192.168.148.10 on VMnet8, avoid moving or reconfiguring it during the next phase without a deliberate migration plan, preserve the current working OPNsense configuration, use short sessions with one primary objective and explicit stopping criteria.
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+## Project Summary: Networking-Infrastructure-Engineering
+
+### 1. Project Story
+This project is focused on establishing a robust, segmented enterprise-style virtual network within a VMware homelab environment, with OPNsense configured as the core perimeter firewall and router. The foundational work has included the successful installation and initial configuration of OPNsense 26.7, setting up its internal LAN gateway (192.168.20.1/24), and defining a DHCP pool for future lab clients.
+
+A primary challenge encountered is a persistent WAN DHCP failure on the OPNsense virtual machine, preventing it from obtaining an IPv4 lease and thus lacking upstream internet connectivity. Initial systematic troubleshooting involved verifying OPNsense's client behavior, inspecting VMware's virtual network configurations (specifically VMnet8 NAT and DHCP services), and checking host-side network settings. Despite these efforts, DHCP Discover requests from OPNsense are not receiving visible offers, and limited visibility into the DHCP negotiation process has hindered fault isolation. The project is currently pivoting towards a more detailed, evidence-based approach, utilizing packet-level analysis with Wireshark and establishing more granular observation points to definitively pinpoint the root cause of the WAN connectivity issue. This ongoing work aims to resolve the foundational networking challenge before proceeding with further network segmentation and service deployment.
+
+### 2. Key Achievements
+*   Successfully installed and performed initial configuration of OPNsense 26.7 as the intended network perimeter firewall for an isolated enterprise-style virtual network.
+*   Configured the OPNsense LAN interface (192.168.20.1/24) and established a DHCP pool for future lab clients, laying the groundwork for internal network services.
+*   Systematically investigated a persistent WAN DHCP failure, which included verifying OPNsense WAN interface configuration, confirming VMware VMnet8 NAT and DHCP settings, and checking the operational status of VMware's DHCP and NAT services.
+*   Initiated diagnostic packet captures (PCAP files) for subsequent detailed Wireshark analysis, marking a strategic shift from configuration checks to evidence-based packet-level fault isolation.
+
+### 3. Lessons Learned
+*   **Importance of Granular Observation Points:** Initial troubleshooting efforts revealed that limited visibility into the DHCP negotiation process (e.g., whether DHCP Discover messages reached the VMware DHCP server) hindered fault isolation. Establishing more precise observation points for packet capture is critical for effective diagnosis.
+*   **Recognizing Diminishing Returns:** Repeated configuration checks without new data or insights quickly yield diminishing returns. A methodical pivot to deeper, evidence-based analysis (like Wireshark) is crucial when initial verification steps prove inconclusive.
+*   **Distinguishing Verified Findings from Assumptions:** It is essential to clearly delineate confirmed facts from assumptions during troubleshooting to avoid repeating checks on known-good components or chasing non-existent problems.
+
+### 4. Next Steps
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and pinpoint communication breakdowns between OPNsense and the VMware DHCP server.
+*   Establish more granular and effective observation points for packet capture, potentially directly on the VMnet8 interface within the host or within the guest VM itself, to ensure comprehensive visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client configuration, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+*   Resolve the WAN DHCP failure to restore upstream connectivity for OPNsense, enabling the progression to further network segmentation and service deployment within the homelab environment.
+
+### 5. Proof Points
+*   **Screenshot: OPNsense Live Boot** (2026-10-11): Visually demonstrates the successful initial boot and installation phase of the OPNsense firewall.
+*   **Screenshot: VMware DHCP Investigation** (2026-10-12): Provides visual context of the troubleshooting environment, indicating active investigation into the WAN DHCP issue.
+*   **Log Entry 2026-10-11 - Summary:** "Installed and configured OPNsense 26.7 as the foundation... established the LAN gateway at 192.168.20.1/24... investigated missing WAN IPv4 connectivity... identified repeated DHCP Discover requests without a visible DHCP Offer."
+*   **Log Entry 2026-10-12 - Tasks Completed:** "Investigated the OPNsense WAN DHCP failure... Verified the OPNsense WAN interface (em1) configuration... Confirmed the VMware VMnet8 NAT and DHCP configuration... Initiated a PCAP capture for subsequent Wireshark analysis."
+*   **Log Entry 2026-10-12 - Next Steps:** "Perform a detailed Wireshark analysis of the captured PCAP file... Establish a more granular and effective observation point... Systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself."
+
+## Project timeline
+### 2026-10-12 • 04:27 to 05:39
+- Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+- Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+- Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+- Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+- Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+- What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+- Duration
+72 minutes (Planned: 60 minutes)
+
+- Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: VMware DHCP Investigation
+![VMware DHCP Investigation](../screenshots/2026-10-12_043617_vmware-dhcp-investigation.png)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-12 • 04:27 to 05:39
+### Goal
+Investigate and troubleshoot the missing IPv4 DHCP lease on the OPNsense WAN interface, identify the cause of the missing DHCP Offer if possible, restore upstream connectivity, validate the default route, document findings and remaining blockers.
+
+### Definition of Done
+Confirm the OPNsense WAN interface and VMware virtual network configuration, determine why DHCP Discover requests are not receiving a visible Offer or document the most likely fault boundary, obtain a WAN IPv4 lease and verify the default route if resolved, capture diagnostic evidence and record a reproducible troubleshooting handoff.
+
+### Goal Achieved
+❌ No
+
+Summary:
+This documentation outlines the initial phase of troubleshooting a persistent WAN DHCP failure experienced by an OPNsense virtual machine within a VMware environment. Despite a systematic approach to verifying both the OPNsense client's behavior and the VMware virtual network configuration, the issue remains unresolved. Limited visibility into the DHCP negotiation process has hindered fault isolation. Recognizing diminishing returns from further configuration checks, the focus is now shifting to evidence-based, packet-level analysis to pinpoint the root cause.
+
+Tasks Completed:
+*   Investigated the OPNsense WAN DHCP failure.
+*   Verified the OPNsense WAN interface (em1) configuration and confirmed repeated DHCP Discover transmissions.
+*   Confirmed the VMware VMnet8 NAT and DHCP configuration.
+*   Checked the operational status of the VMware DHCP and NAT services.
+*   Restarted the VMware DHCP service without restoring existing leases.
+*   Examined Windows DHCP event channels on the host.
+*   Reviewed VMware DHCP lease records for any relevant entries.
+*   Initiated a PCAP capture for subsequent Wireshark analysis.
+
+Issues Encountered:
+*   Repeated configuration checks did not succeed in isolating the fault.
+*   Limited visibility into whether the VMware DHCP server was receiving OPNsense DHCP broadcast messages.
+*   Initial host-side packet captures proved inconclusive in diagnosing the problem.
+*   The WAN DHCP failure for OPNsense persists.
+*   A tendency to repeat verification steps without establishing new observation points or distinguishing clearly between confirmed findings and assumptions.
+
+Next Steps:
+*   Perform a detailed Wireshark analysis of the captured PCAP file to thoroughly examine DHCP negotiation packets and identify communication breakdowns.
+*   Establish a more granular and effective observation point, potentially capturing traffic directly on the VMnet8 interface within the host, or within the guest VM itself (if feasible), to ensure visibility of DHCP Discover requests reaching the VMware DHCP server and its subsequent responses.
+*   Based on the packet-level analysis, systematically isolate the fault to either the OPNsense client, the VMware virtual network's routing/bridging, or the VMware DHCP service itself.
+
+Notes:
+
+### Working Story
+Systematic troubleshooting of a virtual networking failure, evidence-based fault isolation, verification of DHCP client behavior and virtual network configuration, recognition of diminishing returns and a plan to use packet-level analysis for the next diagnostic step
+
+### Friction and AI Gaps
+Repeated configuration checks without isolating the fault, limited visibility into whether VMware DHCP receives OPNsense broadcasts, inconclusive host-side packet captures, unresolved WAN DHCP failure
+
+### What the AI Missed
+Repeated checks of settings and service status already verified, insufficiently distinguished confirmed findings from assumptions, did not establish a new observation point before recommending further troubleshooting
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-12 05:41:25
+Reviewer Notes: 
+
+### Duration
+72 minutes (Planned: 60 minutes)
+
+### Notes
+WAN DHCP failure remains unresolved, VMware VMnet8 configuration matches the intended subnet and gateway, existing VMware DHCP lease file contains only an old NS-DC01 lease, saved PCAP pending analysis in Wireshark
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+This project is currently **In progress**.
+
+---
+
+## 1. Project story
+
+This ongoing project, 'Networking-Infrastructure-Engineering', focuses on building a robust, segmented enterprise-style virtual network within a VMware homelab environment. The foundational work has begun with the installation and initial configuration of OPNsense 26.7, serving as the core firewall and router for a new, isolated network segment. The objective is to apply practical networking concepts to establish a secure and well-defined network architecture, moving from initial setup to real-world troubleshooting of connectivity challenges. The process emphasizes methodical engineering, documentation, and continuous learning from encountered issues, ensuring a solid understanding of network operations from the ground up.
+
+## 2. Key achievements
+
+*   **Firewall Foundation Established:** Successfully installed and initially configured OPNsense 26.7 as the virtual network's gateway, demonstrating proficiency in setting up a professional-grade firewall distribution.
+*   **Isolated Network Segment Defined:** Created and assigned the LAN interface to an isolated virtual network (VMnet2) with a defined subnet (192.168.20.0/24) and DHCP pool, laying the groundwork for future lab clients.
+*   **Structured Troubleshooting Applied:** Demonstrated a methodical approach to diagnosing a critical WAN connectivity issue by inspecting interface status, routing tables, DHCP lease states, and performing packet capture (tcpdump).
+*   **Problem Identification & Documentation:** Clearly identified the core issue—repeated IPv4 DHCP Discover requests on the WAN without a visible DHCP Offer—and meticulously documented the unresolved problem with a targeted troubleshooting plan for subsequent sessions.
+
+## 3. Lessons learned
+
+*   **Pre-configuration Inventory is Critical:** The importance of thoroughly inventorying existing virtual network configurations (VMware networks, DHCP pools, gateway settings, and service status) *before* introducing new components to prevent delays and misconfigurations.
+*   **Distinguish Link State from IP Addressing:** Recognized the need to differentiate between an active physical link and successful IP address assignment, underscoring that link status alone does not guarantee full network connectivity.
+*   **Leverage Packet-Level Evidence:** Highlighted the value of moving to packet capture (tcpdump) for in-depth diagnostics when higher-level troubleshooting steps (interface inspection, routing tables) do not reveal the root cause of connectivity issues.
+*   **Accurate Reporting of Unresolved Issues:** Emphasized the professional practice of documenting genuine challenges and incomplete tasks, rather than implying completion for work still in progress, fostering transparency and a realistic view of project status.
+
+## 4. Next steps
+
+The immediate next steps are focused on resolving the critical WAN connectivity issue and validating the foundational network services:
+
+*   **Resolve WAN DHCP Issue:** Systematically investigate and resolve why OPNsense's WAN interface (`em1`) is not receiving an IPv4 DHCP Offer from the VMware NAT service. This includes validating VMware's NAT and DHCP service configurations and behavior.
+*   **Establish Upstream Connectivity:** Secure a valid WAN IPv4 lease and confirm the default route to enable upstream internet connectivity for the OPNsense firewall.
+*   **Validate LAN Functionality:** Fully test OPNsense's LAN gateway (192.168.20.1/24) and DHCP server functionality on VMnet2.
+*   **Integrate Test Client:** Connect a test client to the newly established isolated lab subnet and validate permitted and blocked traffic through the OPNsense firewall.
+*   **Comprehensive Documentation:** Finalize the network topology diagram and detailed session documentation, including screenshots and packet capture evidence at key milestones and configuration decisions.
+
+## 5. Proof points
+
+*   **Screenshots:**
+    *   `OPNsense Live Boot`: Visual evidence of the initial firewall installation.
+    *   `Passive activity capture` (multiple instances): Demonstrates active engagement and focused work during problem-solving sessions.
+*   **Log Entries (2026-10-11):**
+    *   "Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network..."
+    *   "Investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture..."
+    *   "Identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan..."
+    *   The detailed "Issues Encountered" and "Next Steps" sections explicitly reflect the encountered challenges and the plan to address them, validating the ongoing nature of the work and the structured problem-solving approach.
+
+## Project timeline
+### 2026-10-11 • 11:44 to 15:04
+- Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+- Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+- Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+- Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+- What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+- Duration
+178 minutes (Planned: 60 minutes)
+
+- Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight: Activity_2026 10 11_142320
+![Activity_2026 10 11_142320](../screenshots/activity_2026-10-11_142320.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: Activity_2026 10 11_140856
+![Activity_2026 10 11_140856](../screenshots/activity_2026-10-11_140856.jpg)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+### Highlight: OPNsense Live Boot
+![OPNsense Live Boot](../screenshots/2026-10-11_131714_opnsense-live-boot.png)
+This screenshot captures the most important project evidence for the current phase, showing the main state, artifact, or operational view being reviewed. It highlights the key detail the viewer should notice in this stage of the project.
+
+
+## Trials and tribulations
+### 2026-10-11 • 11:44 to 15:04
+### Goal
+Establish the baseline of the existing VMware homelab network, identify virtual network connections and IP addressing, examine routing and DNS behavior within the lab, identify one genuine networking issue or discrepancy, and establish the foundation for the segmented enterprise network.
+
+### Definition of Done
+Existing virtual network topology documented, NS-DC01 network configuration identified, IP addressing and routing understood, DNS resolution tested, connectivity between relevant lab systems assessed, one real issue investigated if present, findings and next steps documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Installed and configured OPNsense 26.7 as the foundation for an isolated enterprise-style virtual network, established the LAN gateway at 192.168.20.1/24 and configured the DHCP pool for future lab clients, assigned WAN and LAN interfaces and verified VMware NAT addressing, investigated missing WAN IPv4 connectivity through interface inspection, routing-table analysis, DHCP lease inspection, and packet capture, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN DHCP issue and established a targeted troubleshooting plan for the next session.
+
+Tasks Completed:
+Installed OPNsense 26.7 on a dedicated virtual machine, configured WAN and LAN interface assignments, created the isolated VMnet2 network using 192.168.20.0/24, assigned the LAN gateway 192.168.20.1/24, configured the LAN DHCP pool from 192.168.20.100 to 192.168.20.199, verified VMware VMnet8 NAT subnet and gateway settings, inspected VMware DHCP pool configuration and service status, inspected OPNsense interface status and routing tables, examined DHCP lease state, captured WAN IPv4 DHCP traffic with tcpdump, identified repeated DHCP Discover requests without a visible DHCP Offer, documented the unresolved WAN connectivity issue and next troubleshooting steps.
+
+Issues Encountered:
+WAN failed to obtain an IPv4 address through DHCP despite the virtual interface reporting an active link, repeated DHCP Discover requests were captured without a visible DHCP Offer, the WAN DHCP lease file was empty, the default IPv4 route was absent, the LAN virtual adapter was initially attached to VMnet0 instead of the intended VMnet2 and required correction, initial troubleshooting was slowed by incomplete inventory of the existing virtual network configuration, DHCPv6 log messages initially complicated interpretation of the IPv4 DHCP issue, Gemini AI generation encountered a temporary 503 service availability error and required manual documentation.
+
+Next Steps:
+Inventory and validate the existing VMware virtual network configuration before making further changes, investigate why OPNsense WAN (`em1`) sends IPv4 DHCP Discover requests without receiving a visible DHCP Offer, verify VMware NAT and DHCP service behavior, obtain a valid WAN IPv4 lease and confirm the default route, test upstream connectivity, verify OPNsense LAN gateway and DHCP functionality on VMnet2, connect a test client to the isolated lab subnet, validate permitted and blocked traffic through the firewall, capture screenshots and packet evidence at key milestones, document troubleshooting findings and configuration decisions, finalize the network topology diagram and session documentation.
+
+Notes:
+OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+
+### Working Story
+Building an isolated virtual network and installing an enterprise-style firewall, translating Network+ concepts into practical interface and subnet configuration, learning to distinguish link state from IP addressing and routing, using packet capture to investigate a real DHCP connectivity failure, identifying the importance of inventory-first engineering, documenting evidence and unresolved issues rather than claiming an unverified success.
+
+### Friction and AI Gaps
+WAN DHCP troubleshooting took longer than expected, initial infrastructure assumptions were not fully validated before configuration, the second virtual network adapter was initially attached to VMnet0 instead of VMnet2 and required correction, distinguishing IPv4 DHCP from DHCPv6 log activity required additional investigation, console scrollback and shell diagnostics added friction, the root cause of the missing WAN IPv4 lease remains unidentified.
+
+### What the AI Missed
+The initial workflow should have inventoried existing VMware networks, DHCP pools, gateway settings, service state, and adapter mappings before configuring OPNsense, troubleshooting repeated the same checks instead of moving to packet-level evidence sooner, the initial interface investigation did not distinguish DHCPv6 Solicit messages from IPv4 DHCP requests clearly enough, the DHCP pool was initially treated as a potential mismatch even though its range was valid for VMnet8, the cause of the missing WAN DHCP response was not established and must not be presented as a confirmed VMware service fault.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 15:08:23
+Reviewer Notes: OPNsense installation and LAN configuration are complete, WAN is assigned to em1 and connected to VMware NAT, LAN is assigned to em0 on VMnet2, WAN currently has no IPv4 address, the DHCP lease file is empty, IPv4 DHCP Discover requests were captured on em1 without a visible Offer, the cause remains unresolved, do not mark WAN routing or firewall functionality as validated.
+
+### Duration
+178 minutes (Planned: 60 minutes)
+
+### Notes
+VMnet2 is configured as Host-only with subnet 192.168.20.0/24 and VMware DHCP disabled, OPNsense LAN is 192.168.20.1/24, the intended OPNsense LAN DHCP pool is 192.168.20.100–192.168.20.199, VMnet8 is configured as NAT with subnet 192.168.148.0/24, VMware NAT gateway is 192.168.148.2, VMware DHCP pool is 192.168.148.128–192.168.148.254, VMware DHCP Service was reported running, WAN adapter settings were confirmed as NAT with Connected and Connect at power on enabled, WAN DHCP response path still requires investigation.
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# Networking-Infrastructure-Engineering
+
+Status: In progress
+
+## Project story
+Networking-Infrastructure-Engineering is currently in progress, with progress and evidence captured in the project logs and screenshots. The work centers on delivering practical outcomes, documenting the engineering process, and making progress easy to review. Key lessons include keeping documentation close to delivery, recording proof as work progresses, and making handoff notes explicit.
+
+## Project timeline
+### 2026-10-10 • 15:59
+- Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+- Tasks Completed
+established repo
+
+- Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+- Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+- Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+- Working Story
+None
+
+- Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+- Duration
+2 minutes (Planned: 5 minutes)
+
+- Notes
+
+
+## Screenshots and proof
+### Highlight moments
+No screenshots were found in the current project. Capture a few key proof images to enrich this summary.
+
+
+## Trials and tribulations
+### 2026-10-10 • 15:59
+### Summary
+Established Project 2 workspace at D:\Projects\Networking-Infrastructure-Engineering, initialized AutoDoc, installed GitHub CLI and authenticated with GitHub, created the public networking-infrastructure-engineering repository, configured the origin remote and main branch, pushed the initial AutoDoc project structure to GitHub, enabled AutoDoc automatic synchronization. Next: finalize README and CHANGELOG, set repository description, verify the initial commit and prepare for Project 2 Session 1.
+
+### Tasks Completed
+established repo
+
+### Notes
+
+
+---
+
+## Session – 15:58 to 16:00
+### Goal
+Establish the Project 2 GitHub repository, initialize AutoDoc, enable automatic Git synchronization, record repository creation, prepare the initial project documentation, establish a clean starting point for Session 1.
+
+### Definition of Done
+Public GitHub repository created, local Git repository connected to the remote, automatic sync enabled, AutoDoc creation session logged, README and CHANGELOG initialized, project description configured, initial changes committed and pushed, repository setup verified.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Successfully established the Networking & Infrastructure Engineering project workspace, including the setup of the public GitHub repository and the initial integration of AutoDoc for documentation generation and synchronization.
+
+Tasks Completed:
+*   Created the Networking & Infrastructure Engineering project workspace.
+*   Initialized AutoDoc within the project.
+*   Installed GitHub CLI and completed authentication with GitHub.
+*   Created the public `networking-infrastructure-engineering` GitHub repository.
+*   Configured the `origin` remote and `main` branch for the repository.
+*   Pushed the initial AutoDoc project structure to the repository.
+*   Enabled automatic synchronization for documentation.
+*   Generated the first engineering log using AutoDoc.
+*   Committed the initial documentation changes to the repository.
+
+Issues Encountered:
+*   GitHub CLI was initially unavailable; resolved by refreshing the PowerShell session to update the system PATH after installation.
+*   Repository publishing via GitHub CLI was blocked until the CLI was fully installed and authenticated.
+*   The AutoDoc session status did not clearly confirm an active session, requiring manual verification.
+
+Next Steps:
+None
+
+Notes:
+None
+
+### Working Story
+None
+
+### Friction and AI Gaps
+GitHub CLI was initially unavailable, installation required refreshing the PowerShell session to update PATH, repository publishing was blocked until GitHub CLI was installed and authenticated, the AutoDoc session status did not clearly confirm the active session.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-10 16:01:10
+Reviewer Notes: Repository creation and initial AutoDoc logging completed successfully, local commit d88f67c created, initial push to GitHub succeeded before the session log was generated, subsequent log commit push status remains unverified, README and CHANGELOG require review, GitHub repository description still needs to be configured.
+
+### Duration
+2 minutes (Planned: 5 minutes)
+
+### Notes
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
