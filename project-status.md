@@ -323,4 +323,4 @@ Ubuntu Server 24.04.5 ISO selected and attached for reinstallation. Final boot/i
 
 Committed project snapshots from Windows Helpdesk Lab (`fc920413f4437980f8cf7428c5abc5f87c771bb0`) and Networking & Infrastructure (`738605f081d88f969f09c9bc007a524f821a4838`) are preserved under `projects/`. Their original logs and 39 log-referenced screenshots are included, along with the Networking topology graphic. The Git histories were not imported.
 
-AutoDoc state, assistant-plan files, and the unreferenced Networking self-test screenshot were excluded. The local source folders remain as backups; their pre-existing working-tree changes were not copied or modified.
+AutoDoc state, assistant-plan files, and the unreferenced Networking self-test screenshot were excluded. The original Helpdesk and Networking GitHub repositories are private; CyberOps-Sandbox remains public. The local source folders remain as backups; their pre-existing working-tree changes were not copied or modified.

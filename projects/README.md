@@ -8,3 +8,5 @@ These content-only snapshots preserve the committed project files, original work
 Git histories were not imported. The source repositories retain their original logs. The committed snapshots here include the logs and their referenced screenshots; the Networking topology graphic is included as well.
 
 AutoDoc state directories and assistant-plan files were excluded. The unreferenced Networking self-test screenshot was also excluded. Local source folders remain as backups with their pre-existing working-tree changes; those uncommitted changes are not part of these snapshots.
+
+The original Helpdesk and Networking GitHub repositories are private; CyberOps-Sandbox remains public.
