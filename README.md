@@ -7,92 +7,102 @@
 ## Status: In progress
 
 ## Project summary
-Here is a concise project summary for 'CyberOps-Sandbox', reflecting its ongoing status.
-
----
-
-# CyberOps-Sandbox: Building a Centralized Security Monitoring Environment
+# CyberOps-Sandbox: Building a Resilient SIEM Foundation
 
 ## 1. Project Story
 
-The **CyberOps-Sandbox** project is actively establishing a dedicated, robust virtual environment for centralized security monitoring, designed to provide hands-on experience and demonstrate practical cyber operations capabilities. The project initiated by provisioning a foundational Ubuntu Server within VMware, strategically integrating it into a segmented virtual network (OPNsense LAN via VMnet2).
+The CyberOps-Sandbox project is establishing a robust, centralized Security Information and Event Management (SIEM) environment to enable advanced cyber operations and telemetry analysis. This ongoing initiative focuses on building a resilient and scalable security monitoring infrastructure.
 
-Currently, the primary focus is on the crucial deployment of **Wazuh**, a leading open-source security platform, to serve as the core Security Information and Event Management (SIEM) solution. This involves meticulous selection and installation of the correct Ubuntu Server version (24.04.5 LTS) to ensure optimal compatibility and stability for Wazuh. Once Wazuh is operational, the sandbox will enable comprehensive security telemetry collection, baseline establishment, and incident analysis, laying the groundwork for advanced cyber defense practices.
+Initial efforts focused on deploying the core SIEM stack and exploring endpoint telemetry, but faced significant infrastructure compatibility and resource challenges. This led to an iterative approach, necessitating a full re-establishment of the core SIEM server environment. Through this process, we meticulously rebuilt the Ubuntu server infrastructure, successfully deployed the Wazuh SIEM stack, and overcame critical constraints, including OS versioning and host storage limitations. The project has now achieved a stable, operational SIEM foundation, ready for deeper endpoint integration and security use case development.
 
 ## 2. Key Achievements
 
-*   **Foundational Server Provisioning:** Successfully provisioned and configured an Ubuntu Server virtual machine in VMware, establishing the essential operating system foundation for the security monitoring solution.
-*   **Network Segmentation & Integration:** Seamlessly integrated the server into a segmented virtual network (OPNsense LAN via VMnet2), ensuring proper isolation and controlled communication crucial for security operations.
-*   **Remote Administration Enabled:** Established and verified remote SSH access from the host machine to the Ubuntu Server, streamlining management and configuration tasks.
-*   **Critical OS Version Alignment:** Through proactive compatibility review, identified and prepared for the correct Ubuntu Server 24.04.5 LTS version necessary for a stable Wazuh deployment, avoiding potential issues with an initially considered newer release.
-*   **Initial Setup Challenge Resolution:** Demonstrated effective problem-solving by navigating and resolving initial setup challenges, including forgotten login credentials via recovery mode and adapting to host resource constraints for VM memory allocation.
-*   **Wazuh Deployment Readiness:** Progressed to the point of acquiring necessary Wazuh components (e.g., signing key) and preparing the VM for the all-in-one Wazuh installation, signifying readiness for the core SIEM deployment phase.
+*   **Resilient SIEM Deployment:** Successfully re-established and deployed a functional Wazuh 4.14.10 all-in-one SIEM stack on Ubuntu Server 24.04.5 LTS within a VMware environment, demonstrating iterative problem-solving and recovery capabilities.
+*   **Robust Infrastructure Foundation:** Configured secure remote administration via OpenSSH and expanded virtual machine resources (LVM root filesystem) to meet application requirements.
+*   **Overcoming Critical Hurdles:** Addressed significant infrastructure challenges, including initial OS compatibility issues (necessitating a rollback), complex VM boot configurations, and physical host storage exhaustion during deployment.
 
 ## 3. Lessons Learned
 
-*   **Pre-emptive Version Compatibility is Key:** The importance of thoroughly verifying operating system compatibility with target applications (Wazuh) *before* deployment became evident, as an initial incorrect Ubuntu version choice necessitated an OS replacement, highlighting the value of upfront planning.
-*   **Systematic Troubleshooting & Recovery:** Encountering and successfully resolving issues like forgotten login credentials reinforced the necessity of methodical troubleshooting and leveraging system recovery mechanisms.
-*   **Iterative Resource Allocation:** Acknowledged that initial conservative VM resource allocations, driven by host limitations, require ongoing review and potential adjustment as project requirements and performance demands evolve, particularly with the introduction of resource-intensive applications like Wazuh.
-*   **Distinguishing ISO vs. Booted OS:** Learned the critical distinction between an attached ISO and the *actually booted* operating system version to ensure correct configurations and avoid future deployment roadblocks.
+*   **Thorough Pre-flight Checks:** The critical importance of comprehensive pre-deployment checks, particularly for host disk capacity and component compatibility, to prevent costly interruptions.
+*   **Independent Validation:** Emphasized the need for independent validation of AI-generated guidance for critical infrastructure components to avoid compatibility issues.
+*   **Systematic Troubleshooting:** Reinforced the value of explicit package installation verification before checking service status, and meticulous command entry to prevent diagnostic delays.
+*   **Resilience in Practice:** Demonstrated the ability to recover from unexpected system-level issues, such as full operating system reinstallation and interrupted deployments, and continue progress effectively.
 
 ## 4. Next Steps
 
-*   Complete the Ubuntu Server 24.04.5 LTS installation and verification on the virtual machine.
-*   Proceed with the all-in-one deployment and configuration of the Wazuh Manager, Indexer, and Dashboard.
-*   Validate Wazuh services are fully operational, accessible, and ready for agent enrollment.
-*   Begin ingesting security telemetry from various endpoints and establishing initial monitoring baselines within Wazuh.
-*   Continuously review and potentially increase VM memory allocation based on Wazuh performance and host resource availability.
+*   Integrate Windows endpoints into the Wazuh SIEM for comprehensive log collection and security monitoring.
+*   Begin ingesting and analyzing telemetry data from integrated endpoints to identify security visibility gaps and establish baseline security logs.
+*   Develop initial security use cases and alerts based on the collected security data.
 
 ## 5. Proof Points
 
-**Project Logs:**
-*   `2026-11-03.md`: Documents the successful provisioning of the Ubuntu Server, its integration into the segmented network, establishment of SSH access, and initial configuration.
-*   `2026-11-04.md`: Details the proactive compatibility review, the identification and procurement of the correct Ubuntu Server 24.04.5 LTS for Wazuh, and the ongoing preparatory steps for the Wazuh deployment.
-
-**Screenshot Captions (Evidencing foundational work and future intent):**
-*   **Foundational Setup:** "Ubuntu Storage Configuration," "Ubuntu Username Recovery after forgetting," "Ubuntu Server First Login," "Ubuntu SSH Service Running"
-*   **Security Monitoring Objectives:** "Endpoint Baseline Initial Audit," "Security Log Baseline," "Telemetry Visibility Gap," "Process Creation Telemetry," "Security Event Distribution," "CyberOps Baseline v0.1" (Indicating the strategic intent to build comprehensive security monitoring and analysis capabilities).
+*   **Wazuh Services Operational:** Screenshot evidence confirms Wazuh Indexer, Manager, and Dashboard services are actively running.
+*   **Wazuh Dashboard Accessible:** Screenshot evidence verifies successful web access to the Wazuh SIEM dashboard over HTTPS.
+*   **Core Configuration:** Wazuh version 4.14.10 deployed on Ubuntu Server 24.04.5 LTS (VM configured with 4 vCPU, 8 GB RAM, 50 GB virtual disk, with root filesystem expanded to 48 GB).
+*   **Remote Access:** OpenSSH is installed and active, confirming secure remote administration capabilities.
+*   **Early Telemetry Exploration:** Prior efforts included initial audit and collection of security logs, process creation telemetry, and identification of telemetry visibility gaps, providing a foundation for upcoming endpoint integration.
 
 ## Latest session
 ### Work completed
-Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+Ubuntu Server 24.04.5 LTS reinstallation, VMware boot configuration, Ubuntu package updates, LVM root filesystem expansion, OpenSSH installation and configuration, remote SSH validation, Wazuh indexer deployment, Wazuh manager deployment, Wazuh dashboard deployment, service health verification, dashboard accessibility validation.
 
 ### AI-reviewed session summary
-Summary:
-Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+**Summary:**
+This documentation details the process of re-establishing a compatible Ubuntu server environment within VMware, configuring secure remote administration, and deploying a functional Wazuh Security Information and Event Management (SIEM) stack. The initiative focused on rebuilding the infrastructure while preserving existing VMware hardware configurations, addressing initial operating system compatibility issues, overcoming critical resource constraints, and ensuring the accessibility and health of the deployed security monitoring services.
 
-Tasks Completed:
-Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+**Tasks Completed:**
+*   Reinstallation of Ubuntu Server 24.04.5 LTS.
+*   Configuration of VMware boot settings to ensure proper virtual disk boot.
+*   Execution of comprehensive Ubuntu package updates.
+*   Expansion of the LVM root filesystem to accommodate application requirements.
+*   Installation and configuration of OpenSSH for secure remote access.
+*   Validation of remote SSH connectivity.
+*   Deployment of the Wazuh Indexer component.
+*   Deployment of the Wazuh Manager component.
+*   Deployment of the Wazuh Dashboard component.
+*   Verification of all deployed Wazuh service health.
+*   Validation of Wazuh Dashboard accessibility.
 
-Issues Encountered:
-The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+**Issues Encountered:**
+*   Initial attempt to use Ubuntu 26.04 resulted in compatibility issues, necessitating a rollback to 24.04.5 LTS.
+*   Difficulty ensuring the virtual machine booted from the existing virtual disk rather than the replacement ISO after OS reinstallation.
+*   An unexpected full operating system reinstallation was required due to prior issues, consuming additional time.
+*   The OpenSSH server package was initially missing, leading to failed SSH connection attempts.
+*   Stale SSH host identification entries caused connection warnings and required manual client-side cleanup.
+*   Physical Windows host storage exhaustion occurred during the Wazuh installation, interrupting the deployment process.
+*   Recovery and continuation of the interrupted Wazuh installation required additional troubleshooting and resource management.
 
-Next Steps:
-Need to finish Ubuntu 26.04.5 LTS iso swap to finish Wazuh installation
+**Next Steps:**
+No explicit next steps were provided in the rough notes.
 
-Notes:
+**Notes:**
+*   Initial OS compatibility guidance obtained via AI was not sufficiently validated, leading to a need for OS reinstallation. This highlights the importance of independent verification of critical infrastructure compatibility.
+*   The VMware ISO boot configuration required more intensive troubleshooting than anticipated, indicating a need for clearer instructions or pre-validation in future similar tasks.
+*   The initial SSH service check assumed OpenSSH was installed, which was incorrect. Future diagnostic steps should explicitly confirm package installation before checking service status.
+*   A typo in a package inspection command led to wasted diagnostic time. Emphasize careful command entry and validation.
+*   A critical oversight was not checking the host disk capacity *before* beginning the Wazuh deployment, directly leading to installation interruption and recovery efforts. Future deployments must include thorough pre-flight checks of all system resources.
 
-**Session time:** 2026-11-04, 05:49 to 06:19
+**Session time:** 2026-11-16, 07:12 to 08:01
 
-**Goal:** Deploy Wazuh all-in-one on Ubuntu Server and establish the centralized monitoring foundation.
+**Goal:** Establish the Wazuh SIEM infrastructure on ubuntu-siem01, validate the Ubuntu Server environment, deploy the all-in-one Wazuh stack, confirm dashboard accessibility, prepare the environment for Windows endpoint integration.
 
-**Goal achieved:** No
+**Goal achieved:** Yes
 
-**Duration:** 30 minutes (planned: 45 minutes)
+**Duration:** 49 minutes (planned: 50 minutes)
 
-**Working story:** None
+**Working story:** Establishing a compatible SIEM server environment, rebuilding the Ubuntu infrastructure while preserving VMware hardware configuration, configuring secure remote administration, deploying and recovering a centralized security monitoring stack, validating service health and dashboard accessibility, overcoming infrastructure resource constraints.
 
-**Friction or blockers:** The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+**Friction or blockers:** Initial Ubuntu 26.04 compatibility issue, booting from the replacement ISO instead of the existing virtual disk, reinstalling the operating system, missing OpenSSH server package, stale SSH host identification, physical Windows host storage exhaustion during Wazuh installation, recovering the interrupted installation.
 
-**AI gaps:** None
+**AI gaps:** Initial OS compatibility guidance was insufficiently validated, the ISO boot configuration required additional troubleshooting, the initial SSH service check assumed OpenSSH was installed, one package inspection command contained a typo, host disk capacity was not checked before beginning the Wazuh deployment.
 
-**AI peer review:** Approved by human at 2026-11-04 06:22:23
+**AI peer review:** Approved by human at 2026-11-16 08:02:57
 
-**Reviewer notes:** Keep the existing VM hardware configuration. Confirm Ubuntu 24.04.5 is actually installed before proceeding with Wazuh.
+**Reviewer notes:** Ubuntu Server 24.04.5 LTS is installed on ubuntu-siem01, Wazuh components are version 4.14.10, all three core services report active, dashboard access over HTTPS is confirmed.
 
-**Notes:** Existing VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Wazuh signing key was downloaded successfully.
+**Notes:** VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Ubuntu root filesystem expanded to 48 GB, approximately 23 GB available at final verification. Ubuntu IP address: 192.168.20.131. OpenSSH is installed and active. Physical Windows D: drive storage was recovered, leaving approximately 112 GB available.
 
-**Handoff:** Ubuntu Server 24.04.5 ISO selected and attached for reinstallation. Final boot/install confirmation and OS compatibility validation remain outstanding. Wazuh repository and packages have not yet been installed.
+**Handoff:** Wazuh infrastructure deployment is complete. The dashboard is accessible, but no endpoint agents are registered yet. Next session: integrate WIN11-CLIENT01, register the Wazuh agent, generate controlled Windows activity, verify centralized telemetry ingestion, and begin detection engineering.
 
 <!-- autodoc:project-snapshot:end -->
 
