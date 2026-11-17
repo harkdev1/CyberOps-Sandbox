@@ -7,102 +7,94 @@
 ## Status: In progress
 
 ## Project summary
-# CyberOps-Sandbox: Building a Resilient SIEM Foundation
+# CyberOps-Sandbox: Empowering Advanced Endpoint Telemetry (In Progress)
 
 ## 1. Project Story
 
-The CyberOps-Sandbox project is establishing a robust, centralized Security Information and Event Management (SIEM) environment to enable advanced cyber operations and telemetry analysis. This ongoing initiative focuses on building a resilient and scalable security monitoring infrastructure.
-
-Initial efforts focused on deploying the core SIEM stack and exploring endpoint telemetry, but faced significant infrastructure compatibility and resource challenges. This led to an iterative approach, necessitating a full re-establishment of the core SIEM server environment. Through this process, we meticulously rebuilt the Ubuntu server infrastructure, successfully deployed the Wazuh SIEM stack, and overcame critical constraints, including OS versioning and host storage limitations. The project has now achieved a stable, operational SIEM foundation, ready for deeper endpoint integration and security use case development.
+The CyberOps-Sandbox project is dedicated to building a robust, controlled environment for cybersecurity operations, focusing on real-world threat detection and incident response capabilities. This ongoing phase specifically concentrated on enhancing our Security Information and Event Management (SIEM) integration. We successfully deployed and configured Wazuh agents on a Windows 11 endpoint, establishing a critical pipeline for ingesting high-fidelity PowerShell telemetry. This work ensures that sophisticated activities like script block logging (Event ID 4104) are captured and centrally archived, laying essential groundwork for advanced threat hunting and forensic analysis within the sandbox environment.
 
 ## 2. Key Achievements
 
-*   **Resilient SIEM Deployment:** Successfully re-established and deployed a functional Wazuh 4.14.10 all-in-one SIEM stack on Ubuntu Server 24.04.5 LTS within a VMware environment, demonstrating iterative problem-solving and recovery capabilities.
-*   **Robust Infrastructure Foundation:** Configured secure remote administration via OpenSSH and expanded virtual machine resources (LVM root filesystem) to meet application requirements.
-*   **Overcoming Critical Hurdles:** Addressed significant infrastructure challenges, including initial OS compatibility issues (necessitating a rollback), complex VM boot configurations, and physical host storage exhaustion during deployment.
+*   **End-to-End PowerShell Telemetry:** Successfully implemented and validated the complete collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry from a Windows 11 client to a centralized Wazuh SIEM.
+*   **Wazuh Agent Integration:** Deployed and registered the Wazuh agent on the `WIN11-CLIENT01` endpoint, ensuring active monitoring and connectivity.
+*   **Advanced Auditing Configuration:** Configured Windows Group Policy to enable PowerShell Script Block Logging, capturing detailed script execution data.
+*   **Raw Event Archiving:** Enabled and verified the Wazuh manager's capability to retain raw JSON events, providing granular data for deep investigations.
+*   **System Hardening:** Identified and resolved critical configuration issues in the Wazuh manager XML, enhancing its stability and functionality.
 
 ## 3. Lessons Learned
 
-*   **Thorough Pre-flight Checks:** The critical importance of comprehensive pre-deployment checks, particularly for host disk capacity and component compatibility, to prevent costly interruptions.
-*   **Independent Validation:** Emphasized the need for independent validation of AI-generated guidance for critical infrastructure components to avoid compatibility issues.
-*   **Systematic Troubleshooting:** Reinforced the value of explicit package installation verification before checking service status, and meticulous command entry to prevent diagnostic delays.
-*   **Resilience in Practice:** Demonstrated the ability to recover from unexpected system-level issues, such as full operating system reinstallation and interrupted deployments, and continue progress effectively.
+*   **Verify at the Source First:** It is paramount to confirm local event generation on the source endpoint *before* troubleshooting SIEM agent collection or forwarding issues. This ensures the problem isn't upstream of the agent.
+*   **Policy Activation Nuances:** Understand that some system policy changes, particularly in PowerShell, require a fresh process or session to take effect. Always test changes in a new context.
+*   **Configuration XML Validation:** Thoroughly validate configuration files (e.g., Wazuh manager XML) to avoid subtle syntax errors or duplicate elements that can silently prevent critical features from activating.
+*   **Structured Troubleshooting:** Establish a systematic troubleshooting sequence: enable logging, generate a controlled event, verify it locally, then verify its presence in the SIEM manager's archives.
 
 ## 4. Next Steps
 
-*   Integrate Windows endpoints into the Wazuh SIEM for comprehensive log collection and security monitoring.
-*   Begin ingesting and analyzing telemetry data from integrated endpoints to identify security visibility gaps and establish baseline security logs.
-*   Develop initial security use cases and alerts based on the collected security data.
+This specific implementation and validation phase has reached its immediate objectives, establishing a foundational capability for Windows endpoint telemetry within the CyberOps-Sandbox. The overall project continues, and future iterations will build upon this robust data ingestion pipeline to develop advanced detection rules, automate incident response playbooks, and integrate additional security tools and data sources.
 
 ## 5. Proof Points
 
-*   **Wazuh Services Operational:** Screenshot evidence confirms Wazuh Indexer, Manager, and Dashboard services are actively running.
-*   **Wazuh Dashboard Accessible:** Screenshot evidence verifies successful web access to the Wazuh SIEM dashboard over HTTPS.
-*   **Core Configuration:** Wazuh version 4.14.10 deployed on Ubuntu Server 24.04.5 LTS (VM configured with 4 vCPU, 8 GB RAM, 50 GB virtual disk, with root filesystem expanded to 48 GB).
-*   **Remote Access:** OpenSSH is installed and active, confirming secure remote administration capabilities.
-*   **Early Telemetry Exploration:** Prior efforts included initial audit and collection of security logs, process creation telemetry, and identification of telemetry visibility gaps, providing a foundation for upcoming endpoint integration.
+*   Wazuh Agent Installed/Started Successfully
+*   Wazuh Powershell Configuration
+*   Wazuh Windows Endpoint Investigation
+*   Raw Event Archiving Configuration
+*   Wazuh Powershell Event Ingestion Confirmed
 
 ## Latest session
 ### Work completed
-Ubuntu Server 24.04.5 LTS reinstallation, VMware boot configuration, Ubuntu package updates, LVM root filesystem expansion, OpenSSH installation and configuration, remote SSH validation, Wazuh indexer deployment, Wazuh manager deployment, Wazuh dashboard deployment, service health verification, dashboard accessibility validation.
+Configured Windows PowerShell Script Block Logging through the Windows registry, verified local generation of PowerShell Event ID 4104, confirmed the Wazuh agent was collecting the PowerShell Operational event channel, enabled Wazuh JSON event archiving, corrected the Wazuh manager configuration XML and validated it, restarted the Wazuh manager successfully, verified that controlled PowerShell test events reached ubuntu-siem01 and were written to /var/ossec/logs/archives/archives.json.
 
 ### AI-reviewed session summary
 **Summary:**
-This documentation details the process of re-establishing a compatible Ubuntu server environment within VMware, configuring secure remote administration, and deploying a functional Wazuh Security Information and Event Management (SIEM) stack. The initiative focused on rebuilding the infrastructure while preserving existing VMware hardware configurations, addressing initial operating system compatibility issues, overcoming critical resource constraints, and ensuring the accessibility and health of the deployed security monitoring services.
+Successfully implemented and validated end-to-end collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry. This involved enabling script-block auditing on a Windows endpoint via the registry, configuring the Wazuh agent to collect these events, and setting up the Wazuh manager to retain raw JSON events in its archives. Key issues encountered during configuration, including incorrect manager XML and policy activation nuances, were identified and resolved, culminating in the successful verification of controlled PowerShell events reaching the centralized SIEM and being stored in JSON format.
 
 **Tasks Completed:**
-*   Reinstallation of Ubuntu Server 24.04.5 LTS.
-*   Configuration of VMware boot settings to ensure proper virtual disk boot.
-*   Execution of comprehensive Ubuntu package updates.
-*   Expansion of the LVM root filesystem to accommodate application requirements.
-*   Installation and configuration of OpenSSH for secure remote access.
-*   Validation of remote SSH connectivity.
-*   Deployment of the Wazuh Indexer component.
-*   Deployment of the Wazuh Manager component.
-*   Deployment of the Wazuh Dashboard component.
-*   Verification of all deployed Wazuh service health.
-*   Validation of Wazuh Dashboard accessibility.
+*   Configured Windows PowerShell Script Block Logging through the Windows registry.
+*   Verified local generation of PowerShell Event ID 4104 on the Windows endpoint.
+*   Confirmed the Wazuh agent was successfully collecting the PowerShell Operational event channel.
+*   Enabled Wazuh JSON event archiving on the manager.
+*   Corrected the Wazuh manager configuration XML to enable archiving.
+*   Validated the corrected Wazuh manager configuration.
+*   Successfully restarted the Wazuh manager service.
+*   Verified that controlled PowerShell test events reached the `ubuntu-siem01` Wazuh manager.
+*   Confirmed that these events were written to `/var/ossec/logs/archives/archives.json`.
 
 **Issues Encountered:**
-*   Initial attempt to use Ubuntu 26.04 resulted in compatibility issues, necessitating a rollback to 24.04.5 LTS.
-*   Difficulty ensuring the virtual machine booted from the existing virtual disk rather than the replacement ISO after OS reinstallation.
-*   An unexpected full operating system reinstallation was required due to prior issues, consuming additional time.
-*   The OpenSSH server package was initially missing, leading to failed SSH connection attempts.
-*   Stale SSH host identification entries caused connection warnings and required manual client-side cleanup.
-*   Physical Windows host storage exhaustion occurred during the Wazuh installation, interrupting the deployment process.
-*   Recovery and continuation of the interrupted Wazuh installation required additional troubleshooting and resource management.
+*   **Wazuh Event Visibility:** PowerShell events were initially visible locally on the Windows endpoint but were not appearing in Wazuh, suggesting a collection or forwarding issue.
+*   **Script Block Logging Activation:** Script Block Logging was not enabled through the initially expected registry policy, requiring a specific registry key modification.
+*   **PowerShell Session Refresh:** After enabling the Script Block Logging policy, a fresh PowerShell process was required before controlled events would appear, a detail initially overlooked.
+*   **Wazuh Manager Configuration Errors:** The Wazuh manager configuration XML contained duplicate root elements, which prevented JSON archiving from being enabled successfully until corrected.
+*   **Troubleshooting Focus:** Initial troubleshooting efforts were misdirected, focusing too heavily on Wazuh agent collection and manager forwarding before adequately confirming the Windows endpoint was generating the specific controlled PowerShell events.
 
 **Next Steps:**
-No explicit next steps were provided in the rough notes.
+No further next steps were outlined for this specific implementation and validation phase.
 
 **Notes:**
-*   Initial OS compatibility guidance obtained via AI was not sufficiently validated, leading to a need for OS reinstallation. This highlights the importance of independent verification of critical infrastructure compatibility.
-*   The VMware ISO boot configuration required more intensive troubleshooting than anticipated, indicating a need for clearer instructions or pre-validation in future similar tasks.
-*   The initial SSH service check assumed OpenSSH was installed, which was incorrect. Future diagnostic steps should explicitly confirm package installation before checking service status.
-*   A typo in a package inspection command led to wasted diagnostic time. Emphasize careful command entry and validation.
-*   A critical oversight was not checking the host disk capacity *before* beginning the Wazuh deployment, directly leading to installation interruption and recovery efforts. Future deployments must include thorough pre-flight checks of all system resources.
+*   A key lesson learned during troubleshooting was the critical importance of verifying local event generation on the source endpoint *before* investigating collection or forwarding issues with the SIEM agent.
+*   The correct sequence for verifying end-to-end telemetry was established: enable logging, generate a controlled event, verify the event locally on the source, then verify its presence in the manager's archives.
+*   Careful attention must be paid to PowerShell policy activation, as some changes (like Script Block Logging via registry) require opening a fresh PowerShell process to take effect.
 
-**Session time:** 2026-11-16, 07:12 to 08:01
+**Session time:** 2026-11-17, 05:05 to 06:11
 
-**Goal:** Establish the Wazuh SIEM infrastructure on ubuntu-siem01, validate the Ubuntu Server environment, deploy the all-in-one Wazuh stack, confirm dashboard accessibility, prepare the environment for Windows endpoint integration.
+**Goal:** Integrate WIN11-CLIENT01 into the Wazuh monitoring environment, register its Wazuh agent with ubuntu-siem01, verify agent connectivity, generate controlled Windows activity, confirm centralized telemetry ingestion.
 
 **Goal achieved:** Yes
 
-**Duration:** 49 minutes (planned: 50 minutes)
+**Duration:** 65 minutes (planned: 40 minutes)
 
-**Working story:** Establishing a compatible SIEM server environment, rebuilding the Ubuntu infrastructure while preserving VMware hardware configuration, configuring secure remote administration, deploying and recovering a centralized security monitoring stack, validating service health and dashboard accessibility, overcoming infrastructure resource constraints.
+**Working story:** Successful implementation and validation of end-to-end Windows PowerShell telemetry collection, enabling script-block auditing on the endpoint, configuring Wazuh to retain raw JSON events, troubleshooting and correcting the manager configuration, proving that controlled Event ID 4104 records traveled from the Windows endpoint to the centralized SIEM.
 
-**Friction or blockers:** Initial Ubuntu 26.04 compatibility issue, booting from the replacement ISO instead of the existing virtual disk, reinstalling the operating system, missing OpenSSH server package, stale SSH host identification, physical Windows host storage exhaustion during Wazuh installation, recovering the interrupted installation.
+**Friction or blockers:** PowerShell events were initially visible locally but not appearing in Wazuh, Script Block Logging was not enabled through the expected registry policy, the policy change required opening a fresh PowerShell process before the controlled event appeared, the Wazuh manager configuration also contained duplicate root XML elements that needed correction before archiving could be enabled successfully.
 
-**AI gaps:** Initial OS compatibility guidance was insufficiently validated, the ISO boot configuration required additional troubleshooting, the initial SSH service check assumed OpenSSH was installed, one package inspection command contained a typo, host disk capacity was not checked before beginning the Wazuh deployment.
+**AI gaps:** The initial troubleshooting focused too heavily on Wazuh collection and forwarding before confirming that Windows was generating the specific controlled PowerShell events, the first test commands did not account for Script Block Logging being disabled, the need to open a fresh PowerShell process after enabling the policy was identified later. The troubleshooting ultimately established the correct sequence: enable logging, generate a controlled event, verify it locally, then verify it in the manager archive.
 
-**AI peer review:** Approved by human at 2026-11-16 08:02:57
+**AI peer review:** Approved by human at 2026-11-17 06:12:58
 
-**Reviewer notes:** Ubuntu Server 24.04.5 LTS is installed on ubuntu-siem01, Wazuh components are version 4.14.10, all three core services report active, dashboard access over HTTPS is confirmed.
+**Reviewer notes:** The session achieved a significant infrastructure milestone. The evidence establishes that PowerShell Script Block Logging is enabled, Event ID 4104 records are generated locally, the Wazuh agent forwards those records, and the Wazuh manager stores them in its raw event archive.
 
-**Notes:** VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Ubuntu root filesystem expanded to 48 GB, approximately 23 GB available at final verification. Ubuntu IP address: 192.168.20.131. OpenSSH is installed and active. Physical Windows D: drive storage was recovered, leaving approximately 112 GB available.
+**Notes:** None.
 
-**Handoff:** Wazuh infrastructure deployment is complete. The dashboard is accessible, but no endpoint agents are registered yet. Next session: integrate WIN11-CLIENT01, register the Wazuh agent, generate controlled Windows activity, verify centralized telemetry ingestion, and begin detection engineering.
+**Handoff:** The next session should begin by verifying that PowerShell Event ID 4104 records are searchable in the Wazuh Dashboard, then proceed to detection engineering and controlled detection testing.
 
 <!-- autodoc:project-snapshot:end -->
 
