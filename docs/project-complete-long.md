@@ -3,6 +3,1398 @@
 Status: In progress
 
 ## Project story
+Here is a concise project summary for 'CyberOps-Sandbox':
+
+---
+
+# CyberOps-Sandbox: Enhancing PowerShell Telemetry in Wazuh
+
+## 1. Project Story
+
+The 'CyberOps-Sandbox' is an ongoing technical initiative focused on advancing cybersecurity operations capabilities within a controlled environment. Our current primary objective is to enhance endpoint visibility by centralizing and refining PowerShell Script Block Logging (Event ID 4104) telemetry from Windows clients into our Wazuh Security Information and Event Management (SIEM) system. This work is critical for establishing a robust, reliable telemetry pipeline that forms the foundation for effective threat detection engineering and incident response exercises. We are actively building and validating the ingestion process to ensure comprehensive visibility of endpoint activities.
+
+## 2. Key Achievements
+
+During this phase of the project, we have made significant progress in establishing a foundational telemetry pipeline:
+
+*   **Enabled Raw Event Archiving:** Successfully identified and enabled Wazuh Filebeat archive forwarding, ensuring that all raw endpoint telemetry, including PowerShell Script Block Logging, is persistently stored for forensic and analysis purposes.
+*   **Validated Raw Event Ingestion:** Confirmed the successful end-to-end ingestion of newly generated PowerShell Script Block Logging (Event ID 4104) events from the `WIN11-CLIENT01` endpoint into the Wazuh manager's raw archives (`/var/ossec/logs/archives/archives.json`).
+*   **Established Telemetry Baseline:** Inspected existing PowerShell telemetry within the Wazuh dashboard, allowing us to establish a baseline understanding of event structure and identify existing security policy discovery activities.
+*   **Operational Readiness:** Verified the operational readiness of core Wazuh services and confirmed active agent connectivity for the monitored Windows endpoint.
+
+## 3. Lessons Learned
+
+This phase provided valuable insights that will guide future development:
+
+*   **Telemetry Pipeline Granularity:** It is crucial to explicitly separate and validate each distinct stage of a telemetry pipeline (event generation, agent forwarding, manager archiving, and dashboard indexing) as individual milestones. This approach greatly streamlines troubleshooting and accurately isolates issues.
+*   **Precision in Test Execution:** Early and clear identification of the target execution host is vital to prevent misdirected testing efforts and accelerate overall progress, reducing friction in the development cycle.
+*   **Differentiating Ingestion vs. Visibility:** Discrepancies between successful raw archive ingestion and subsequent dashboard indexing can be significant time sinks. Future efforts will emphasize validating these concerns independently from the outset to enhance troubleshooting efficiency.
+
+## 4. Next Steps
+
+Our immediate focus is on resolving the current telemetry visibility challenges and advancing into detection engineering:
+
+*   **Resolve Dashboard Visibility:** Investigate and resolve the technical discrepancy preventing newly archived PowerShell Script Block Logging events from appearing in the Wazuh dashboard.
+*   **Develop Detections:** Proceed with developing and deploying new detection rules and dashboards, leveraging the now-validated raw PowerShell telemetry.
+*   **Expand Test Coverage:** Broaden controlled activity generation to simulate additional PowerShell-based attack techniques, further enhancing the sandbox's detection engineering capabilities.
+
+## 5. Proof Points
+
+*   **Project Logs:** The engineering log entry for 2026-11-18.md details the tasks completed, issues encountered, and the clear distinction between successful raw event ingestion and unresolved dashboard visibility, as noted in the "AI Peer Review."
+*   **Screenshot Captions:** Visual evidence includes:
+    *   "Wazuh Filebeat Archive Forwarding Enabled"
+    *   "Wazuh Powershell Event Ingestion Confirmed"
+    *   "Wazuh Powershell Event Dashboard Visibility" (demonstrating existing visibility while highlighting the ongoing challenge for new events)
+
+---
+
+## Project timeline
+### 2026-11-18 • 14:08 to 14:40
+- Goal
+Verify that PowerShell Script Block Logging events (Event ID 4104) collected from WIN11-CLIENT01 are searchable in the Wazuh Dashboard, establish a reliable workflow for inspecting endpoint telemetry, prepare to transition into detection engineering.
+
+- Definition of Done
+All required virtual machines pass the pre-session readiness check, Wazuh Dashboard is accessible, WIN11-CLIENT01 appears as an active agent, PowerShell Event ID 4104 events are searchable in the dashboard, the controlled test marker CYBEROPS-WAZUH-TEST-20261117-THIRD can be located if available in the indexed data, relevant event fields are inspected including endpoint name, event ID, channel, timestamp, and script-block message, findings and indexing limitations are documented, next steps for detection engineering are identified.
+
+- Goal Achieved
+❌ No
+
+**Summary:**
+This documentation outlines the successful establishment and validation of centralized PowerShell Script Block Logging telemetry within Wazuh. Key activities included enabling and configuring Filebeat archive forwarding, inspecting raw PowerShell Event ID 4104 records, identifying security policy discovery activity, and validating controlled endpoint actions against raw SIEM archives. The work specifically focused on distinguishing successful event ingestion from dashboard indexing limitations, thereby laying a critical foundation for subsequent detection engineering efforts.
+
+**Tasks Completed:**
+*   Inspected existing PowerShell Event ID 4104 records within Wazuh Threat Hunting.
+*   Examined event JSON and script-block contents to understand current telemetry.
+*   Identified security-policy discovery activity using `secedit` and `PasswordHistorySize` commands.
+*   Enabled Filebeat Wazuh archive forwarding to ensure all raw events are stored.
+*   Validated the Filebeat configuration for correctness.
+*   Successfully restarted the Filebeat service.
+*   Generated controlled `Get-LocalUser` activity on the designated endpoint, WIN11-CLIENT01, to create new events.
+*   Verified the resulting Event ID 4104 records locally on WIN11-CLIENT01.
+*   Confirmed that the generated events successfully reached `/var/ossec/logs/archives/archives.json` on the Wazuh manager.
+
+**Issues Encountered:**
+*   Difficulty in distinguishing between successful raw event ingestion into archives and their subsequent indexing for dashboard visibility.
+*   Initial generation of test activity occurred on the physical Windows host rather than the intended monitored Windows client.
+*   Challenges in determining why newly archived events were not appearing in the expected dashboard search results despite successful archival.
+*   Time spent on isolating and troubleshooting the telemetry pipeline, diverting focus from direct progression into detection engineering.
+
+**Next Steps:**
+*   Investigate and resolve the discrepancy between raw archive ingestion and dashboard visibility for the new Event ID 4104 records.
+*   Develop new detection rules or dashboards utilizing the validated PowerShell Script Block Logging telemetry.
+*   Expand controlled activity generation to cover additional PowerShell-based attack techniques.
+
+**Notes:**
+The AI assistant's guidance led to several inefficiencies during this process. Specifically, it did not emphasize establishing the correct execution host early enough, allowing initial testing to proceed on an unmonitored physical Windows host. Furthermore, the AI treated dashboard visibility and raw archive ingestion too closely as a single validation step. A more effective approach would have been to explicitly separate and validate the distinct stages of the telemetry pipeline: endpoint event generation, agent forwarding, manager archiving, and finally, indexer/dashboard visibility.
+
+- Working Story
+Improving centralized PowerShell telemetry visibility, identifying and correcting disabled Filebeat archive forwarding, inspecting actual Windows Script Block Logging records, validating controlled endpoint activity through raw SIEM archives, distinguishing successful ingestion from dashboard indexing limitations, establishing a foundation for subsequent detection engineering.
+
+- Friction and AI Gaps
+Distinguishing raw event ingestion from dashboard indexing, initially generating test activity on the physical Windows host instead of the monitored Windows client, determining why newly archived events were not appearing in the expected dashboard search results, spending additional time isolating the telemetry pipeline rather than progressing directly into detection engineering.
+
+- What the AI Missed
+The AI did not establish the execution host early enough and initially allowed testing to proceed on the physical Windows host. It also treated dashboard visibility and raw archive ingestion too closely as one validation step. The investigation should have separated endpoint event generation, agent forwarding, manager archiving, and indexer/dashboard visibility from the beginning.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-18 14:42:53
+Reviewer Notes: The session made meaningful infrastructure progress but did not complete the full detection-engineering objective. Filebeat archive forwarding was disabled and was successfully enabled. Existing PowerShell events were searchable in the dashboard, with eight matching records observed. Newly generated Get-LocalUser events were confirmed in the manager's raw archive, but their appearance in the dashboard remains unresolved.
+
+- Duration
+31 minutes (Planned: 60 minutes)
+
+- Notes
+### 2026-11-17 • 05:05 to 06:11
+- Goal
+Integrate WIN11-CLIENT01 into the Wazuh monitoring environment, register its Wazuh agent with ubuntu-siem01, verify agent connectivity, generate controlled Windows activity, confirm centralized telemetry ingestion.
+
+- Definition of Done
+[ ] Windows endpoint powered on and network connectivity verified, [ ] Wazuh agent installed on WIN11-CLIENT01, [ ] Agent registered with ubuntu-siem01, [ ] Endpoint appears as active in Wazuh, [ ] Windows Security telemetry received by Wazuh, [ ] PowerShell activity successfully collected, [ ] At least one controlled event located and verified in the dashboard.
+
+- Goal Achieved
+✅ Yes
+
+**Summary:**
+Successfully implemented and validated end-to-end collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry. This involved enabling script-block auditing on a Windows endpoint via the registry, configuring the Wazuh agent to collect these events, and setting up the Wazuh manager to retain raw JSON events in its archives. Key issues encountered during configuration, including incorrect manager XML and policy activation nuances, were identified and resolved, culminating in the successful verification of controlled PowerShell events reaching the centralized SIEM and being stored in JSON format.
+
+**Tasks Completed:**
+*   Configured Windows PowerShell Script Block Logging through the Windows registry.
+*   Verified local generation of PowerShell Event ID 4104 on the Windows endpoint.
+*   Confirmed the Wazuh agent was successfully collecting the PowerShell Operational event channel.
+*   Enabled Wazuh JSON event archiving on the manager.
+*   Corrected the Wazuh manager configuration XML to enable archiving.
+*   Validated the corrected Wazuh manager configuration.
+*   Successfully restarted the Wazuh manager service.
+*   Verified that controlled PowerShell test events reached the `ubuntu-siem01` Wazuh manager.
+*   Confirmed that these events were written to `/var/ossec/logs/archives/archives.json`.
+
+**Issues Encountered:**
+*   **Wazuh Event Visibility:** PowerShell events were initially visible locally on the Windows endpoint but were not appearing in Wazuh, suggesting a collection or forwarding issue.
+*   **Script Block Logging Activation:** Script Block Logging was not enabled through the initially expected registry policy, requiring a specific registry key modification.
+*   **PowerShell Session Refresh:** After enabling the Script Block Logging policy, a fresh PowerShell process was required before controlled events would appear, a detail initially overlooked.
+*   **Wazuh Manager Configuration Errors:** The Wazuh manager configuration XML contained duplicate root elements, which prevented JSON archiving from being enabled successfully until corrected.
+*   **Troubleshooting Focus:** Initial troubleshooting efforts were misdirected, focusing too heavily on Wazuh agent collection and manager forwarding before adequately confirming the Windows endpoint was generating the specific controlled PowerShell events.
+
+**Next Steps:**
+No further next steps were outlined for this specific implementation and validation phase.
+
+**Notes:**
+*   A key lesson learned during troubleshooting was the critical importance of verifying local event generation on the source endpoint *before* investigating collection or forwarding issues with the SIEM agent.
+*   The correct sequence for verifying end-to-end telemetry was established: enable logging, generate a controlled event, verify the event locally on the source, then verify its presence in the manager's archives.
+*   Careful attention must be paid to PowerShell policy activation, as some changes (like Script Block Logging via registry) require opening a fresh PowerShell process to take effect.
+
+- Working Story
+Successful implementation and validation of end-to-end Windows PowerShell telemetry collection, enabling script-block auditing on the endpoint, configuring Wazuh to retain raw JSON events, troubleshooting and correcting the manager configuration, proving that controlled Event ID 4104 records traveled from the Windows endpoint to the centralized SIEM.
+
+- Friction and AI Gaps
+PowerShell events were initially visible locally but not appearing in Wazuh, Script Block Logging was not enabled through the expected registry policy, the policy change required opening a fresh PowerShell process before the controlled event appeared, the Wazuh manager configuration also contained duplicate root XML elements that needed correction before archiving could be enabled successfully.
+
+- What the AI Missed
+The initial troubleshooting focused too heavily on Wazuh collection and forwarding before confirming that Windows was generating the specific controlled PowerShell events, the first test commands did not account for Script Block Logging being disabled, the need to open a fresh PowerShell process after enabling the policy was identified later. The troubleshooting ultimately established the correct sequence: enable logging, generate a controlled event, verify it locally, then verify it in the manager archive.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-17 06:12:58
+Reviewer Notes: The session achieved a significant infrastructure milestone. The evidence establishes that PowerShell Script Block Logging is enabled, Event ID 4104 records are generated locally, the Wazuh agent forwards those records, and the Wazuh manager stores them in its raw event archive.
+
+- Duration
+65 minutes (Planned: 40 minutes)
+
+- Notes
+### 2026-11-16 • 07:12 to 08:01
+- Goal
+Establish the Wazuh SIEM infrastructure on ubuntu-siem01, validate the Ubuntu Server environment, deploy the all-in-one Wazuh stack, confirm dashboard accessibility, prepare the environment for Windows endpoint integration.
+
+- Definition of Done
+Ubuntu LTS install confirmed & Wazuh deployment completed
+
+- Goal Achieved
+✅ Yes
+
+**Summary:**
+This documentation details the process of re-establishing a compatible Ubuntu server environment within VMware, configuring secure remote administration, and deploying a functional Wazuh Security Information and Event Management (SIEM) stack. The initiative focused on rebuilding the infrastructure while preserving existing VMware hardware configurations, addressing initial operating system compatibility issues, overcoming critical resource constraints, and ensuring the accessibility and health of the deployed security monitoring services.
+
+**Tasks Completed:**
+*   Reinstallation of Ubuntu Server 24.04.5 LTS.
+*   Configuration of VMware boot settings to ensure proper virtual disk boot.
+*   Execution of comprehensive Ubuntu package updates.
+*   Expansion of the LVM root filesystem to accommodate application requirements.
+*   Installation and configuration of OpenSSH for secure remote access.
+*   Validation of remote SSH connectivity.
+*   Deployment of the Wazuh Indexer component.
+*   Deployment of the Wazuh Manager component.
+*   Deployment of the Wazuh Dashboard component.
+*   Verification of all deployed Wazuh service health.
+*   Validation of Wazuh Dashboard accessibility.
+
+**Issues Encountered:**
+*   Initial attempt to use Ubuntu 26.04 resulted in compatibility issues, necessitating a rollback to 24.04.5 LTS.
+*   Difficulty ensuring the virtual machine booted from the existing virtual disk rather than the replacement ISO after OS reinstallation.
+*   An unexpected full operating system reinstallation was required due to prior issues, consuming additional time.
+*   The OpenSSH server package was initially missing, leading to failed SSH connection attempts.
+*   Stale SSH host identification entries caused connection warnings and required manual client-side cleanup.
+*   Physical Windows host storage exhaustion occurred during the Wazuh installation, interrupting the deployment process.
+*   Recovery and continuation of the interrupted Wazuh installation required additional troubleshooting and resource management.
+
+**Next Steps:**
+No explicit next steps were provided in the rough notes.
+
+**Notes:**
+*   Initial OS compatibility guidance obtained via AI was not sufficiently validated, leading to a need for OS reinstallation. This highlights the importance of independent verification of critical infrastructure compatibility.
+*   The VMware ISO boot configuration required more intensive troubleshooting than anticipated, indicating a need for clearer instructions or pre-validation in future similar tasks.
+*   The initial SSH service check assumed OpenSSH was installed, which was incorrect. Future diagnostic steps should explicitly confirm package installation before checking service status.
+*   A typo in a package inspection command led to wasted diagnostic time. Emphasize careful command entry and validation.
+*   A critical oversight was not checking the host disk capacity *before* beginning the Wazuh deployment, directly leading to installation interruption and recovery efforts. Future deployments must include thorough pre-flight checks of all system resources.
+
+- Working Story
+Establishing a compatible SIEM server environment, rebuilding the Ubuntu infrastructure while preserving VMware hardware configuration, configuring secure remote administration, deploying and recovering a centralized security monitoring stack, validating service health and dashboard accessibility, overcoming infrastructure resource constraints.
+
+- Friction and AI Gaps
+Initial Ubuntu 26.04 compatibility issue, booting from the replacement ISO instead of the existing virtual disk, reinstalling the operating system, missing OpenSSH server package, stale SSH host identification, physical Windows host storage exhaustion during Wazuh installation, recovering the interrupted installation.
+
+- What the AI Missed
+Initial OS compatibility guidance was insufficiently validated, the ISO boot configuration required additional troubleshooting, the initial SSH service check assumed OpenSSH was installed, one package inspection command contained a typo, host disk capacity was not checked before beginning the Wazuh deployment.
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-16 08:02:57
+Reviewer Notes: Ubuntu Server 24.04.5 LTS is installed on ubuntu-siem01, Wazuh components are version 4.14.10, all three core services report active, dashboard access over HTTPS is confirmed.
+
+- Duration
+49 minutes (Planned: 50 minutes)
+
+- Notes
+VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Ubuntu root filesystem expanded to 48 GB, approximately 23 GB available at final verification. Ubuntu IP address: 192.168.20.131. OpenSSH is installed and active. Physical Windows D: drive storage was recovered, leaving approximately 112 GB available.
+### 2026-11-04 • 05:49 to 06:19
+- Goal
+Deploy Wazuh all-in-one on Ubuntu Server and establish the centralized monitoring foundation.
+
+- Definition of Done
+Ubuntu is prepared for Wazuh deployment, Wazuh all-in-one installation completes successfully, Manage, indexer, and dashboard services are operational, Required service ports and network access are verified, Dashboard is accessible from the physical Windows host, or any remaining access blocker is identified and documented.
+
+- Goal Achieved
+❌ No
+
+
+Summary:
+Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+
+Tasks Completed:
+Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+
+Issues Encountered:
+The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+
+Next Steps:
+Need to finish Ubuntu 26.04.5 LTS iso swap to finish Wazuh installation
+
+Notes:
+
+
+
+- Working Story
+None
+
+- Friction and AI Gaps
+The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-04 06:22:23
+Reviewer Notes: Keep the existing VM hardware configuration. Confirm Ubuntu 24.04.5 is actually installed before proceeding with Wazuh.
+
+- Duration
+30 minutes (Planned: 45 minutes)
+
+- Notes
+Existing VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Wazuh signing key was downloaded successfully.
+### 2026-11-03 • 05:57 to 06:34
+- Goal
+Deploy and establish the Ubuntu Server foundation for centralized security monitoring.
+
+- Definition of Done
+The session is complete when Ubuntu Server is installed and operational, the VM has a working network connection, resource allocation is documented, and the environment is ready for Wazuh installation.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+A dedicated Ubuntu Server 26.04.1 LTS virtual machine has been successfully provisioned in VMware, establishing a foundational Linux server for centralized security monitoring. The VM was integrated into the existing segmented OPNsense LAN, with core system configuration, network validation, and remote administration capabilities established. This prepares the environment for future Wazuh deployment without requiring a rebuild of existing infrastructure.
+
+Tasks Completed:
+*   Provisioned a dedicated Ubuntu Server 26.04.1 LTS virtual machine in VMware.
+*   Configured the VM with 2 CPU cores, 4 GB RAM, and a 50 GB virtual disk.
+*   Integrated the VM into the existing OPNsense LAN via VMnet2.
+*   Completed the Ubuntu installation process.
+*   Successfully performed an account recovery and password reset.
+*   Updated all system packages to the latest versions.
+*   Verified hostname and network configuration (IP address, subnet mask).
+*   Confirmed gateway connectivity and external internet access.
+*   Validated DNS resolution.
+*   Enabled the OpenSSH Server.
+*   Established successful remote SSH access from the physical Windows host.
+
+Issues Encountered:
+*   Initial Ubuntu login failed due to an incorrect or forgotten password, necessitating entry into recovery mode to identify the existing account and perform a password reset.
+*   Conservative VM memory allocation was required due to initial host resource availability constraints.
+
+Next Steps:
+*   Proceed with the installation and configuration of Wazuh on the newly provisioned Ubuntu server.
+*   Review host resource availability to potentially increase VM memory allocation if performance bottlenecks are observed or future requirements demand it.
+
+Notes:
+*   The current VM memory allocation of 4 GB is functional but was influenced by host resource limitations. Performance should be monitored during Wazuh deployment and operation, and memory adjusted as needed to ensure optimal security monitoring performance.
+*   The successful integration into the OPNsense LAN through VMnet2 ensures proper network segmentation and controlled communication for the security monitoring solution.
+
+- Working Story
+Establishing a dedicated Linux server foundation for centralized security monitoring, integrating the new server into the existing segmented virtual network, validating connectivity and remote administration, preparing the environment for Wazuh deployment without rebuilding existing infrastructure.
+
+- Friction and AI Gaps
+The Ubuntu login initially failed because the configured password was incorrect or had been forgotten, requiring recovery mode to identify the existing account and reset its password. Initial host resource availability also required conservative VM memory allocation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-03 06:35:12
+Reviewer Notes: Ubuntu Server installation and baseline validation were completed successfully. The server is operational and accessible remotely from the physical Windows host. Network connectivity, DNS resolution, package updates, and SSH functionality were verified.
+
+- Duration
+36 minutes (Planned: 40 minutes)
+
+- Notes
+Hostname: ubuntu-siem01, operating system: Ubuntu 26.04.1 LTS, kernel: Linux 7.0.0-42-generic, architecture: x86_64, network interface: ens33, IPv4 address: 192.168.20.131/24, gateway: 192.168.20.1, VM network: VMnet2, VM allocation: 2 CPU cores, 4 GB RAM, 50 GB disk, SSH service: enabled and active, remote access: verified from Windows PowerShell.
+### 2026-10-26 • 05:52 to 06:38
+- Goal
+Validate practical SIEM deployment options for CyberOps Sandbox, establish the available hosting resources and constraints, select a feasible Wazuh deployment approach, prepare the Week 2 implementation starting point.
+
+- Definition of Done
+Confirm usable host disk capacity and current memory constraints, identify existing VMware VM resource allocations and relevant network connectivity, select a practical SIEM hosting approach, document unresolved dependencies and the first implementation milestone.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Significant progress was made in establishing foundational infrastructure and planning for the development of security operations capabilities. Key activities included reviewing existing network infrastructure, confirming baseline checks, establishing remaining Month 1 tasks, and planning for Wazuh deployment. The primary constraint identified is limited host memory, which requires further evaluation before proceeding with new installations.
+
+Tasks Completed:
+*   Reviewed the existing OPNsense virtual firewall and segmented network infrastructure.
+*   Confirmed completion of Windows endpoint and event-log baseline checks.
+*   Established the remaining Month 1 foundation tasks.
+*   Planned Ubuntu Server deployment and Wazuh installation.
+*   Defined the first Month 2 milestone: collecting and investigating genuine Windows endpoint telemetry.
+
+Issues Encountered:
+*   Available host memory is a significant deployment constraint. A previous check indicated approximately 4.9 GB available while lab VMs were running, which necessitates a thorough evaluation of Wazuh resource allocation prior to installation to ensure stable operation.
+
+Next Steps:
+*   Evaluate Wazuh resource requirements and optimize host memory allocation.
+*   Proceed with Ubuntu Server deployment.
+*   Install and configure Wazuh.
+*   Begin collecting and investigating genuine Windows endpoint telemetry to meet the Month 2 milestone.
+
+Notes:
+The project is transitioning from building and validating foundational infrastructure to developing practical security operations capabilities. There is a strong emphasis on leveraging real telemetry for evidence-based investigations within a reproducible environment.
+
+- Working Story
+The transition from building and validating foundational infrastructure to developing practical security operations capabilities, with an emphasis on real telemetry, evidence-based investigation, and a reproducible environment.
+
+- Friction and AI Gaps
+Available host memory is the main deployment constraint. The previous check showed approximately 4.9 GB available while the lab VMs were running, so Wazuh resource allocation needs to be evaluated before installation.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-26 06:39:06
+Reviewer Notes: Month 1 is substantially established at the infrastructure level. Remaining work includes evaluating available resources and installing Ubuntu Server. Month 2 begins with SIEM deployment, Windows endpoint integration, telemetry validation, and the first investigation.
+
+- Duration
+45 minutes (Planned: 45 minutes)
+
+- Notes
+The target is to align the Month 1 checkpoint with the final week of October and begin Month 2 during the first week of November. The schedule is flexible if deployment requires additional troubleshooting.
+### 2026-10-25 • 18:32 to 18:48
+- Goal
+Establish the current CyberOps infrastructure baseline and identify the technical prerequisites for the November SIEM build, verify host resources, confirm existing VM and network state, identify blockers before installing anything.
+
+- Definition of Done
+Record available host RAM and disk capacity, identify the relevant VMware VMs and their current resource allocations, confirm the intended Windows endpoint and server roles, establish whether a Wazuh deployment is feasible without unnecessary lab changes.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Initial validation of the existing lab infrastructure was performed to establish an evidence-based starting point for the November CyberOps SIEM and detection engineering work. This involved reviewing network baselines, verifying endpoint network identity and connectivity, and confirming the status of core Windows event logging sources on a target workstation. A key finding was the absence of dedicated endpoint telemetry agents, identifying telemetry collection as the next critical technical milestone. No system or network configuration changes were made, preserving the existing infrastructure.
+
+Tasks Completed:
+*   Reviewed the existing OPNsense WAN, LAN, and SERVERS network baseline.
+*   Verified WIN11-CLIENT01 network identity and connectivity configuration.
+*   Confirmed WIN11-CLIENT01 endpoint IPv4 address (192.168.20.165) with gateway (192.168.20.1).
+*   Checked for existing Wazuh and Sysmon service installations on the endpoint; neither were found.
+*   Verified Windows Security logging is enabled (29,072 records observed).
+*   Verified Windows System logging is enabled (1,792 records observed).
+*   Verified Windows PowerShell Operational logging is enabled (483 records observed).
+*   Established that elevated PowerShell privileges are required for inspecting the Security log.
+*   Made no system or network configuration changes to the existing environment.
+
+Issues Encountered:
+*   Initial attempts to inspect the Windows Security log via PowerShell failed due to insufficient privileges, necessitating elevation.
+*   The endpoint's operating system identification differed from the expected Windows 11 designation.
+*   Available host memory is constrained while the existing virtual machines are running, potentially impacting future resource allocation for SIEM components.
+
+Next Steps:
+*   Deploy and configure endpoint telemetry agents (e.g., Wazuh, Sysmon) on WIN11-CLIENT01.
+*   Further investigate the discrepancy in the endpoint's reported operating system identification.
+*   Address host memory constraints to ensure adequate resources for upcoming SIEM and detection engineering tools.
+
+Notes:
+This initial validation effort successfully confirmed the foundational status of the lab environment prior to new deployments. The existing infrastructure, including network configuration, was preserved without modification. Confirmation of active Windows event sources provides a baseline for initial detection capabilities, pending the deployment of advanced telemetry agents.
+
+- Working Story
+Validated the existing lab before deployment, confirmed available Windows event sources, identified endpoint telemetry collection as the next technical milestone, preserved existing infrastructure, established an evidence-based starting point for the November CyberOps SIEM and detection engineering work.
+
+- Friction and AI Gaps
+Initial Security log inspection failed because PowerShell lacked sufficient privileges, endpoint operating system identification differed from the expected Windows 11 designation, available host memory is constrained while the existing virtual machines are running.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 18:49:34
+Reviewer Notes: The endpoint's reported OS identity is Windows 10 Pro 26H2, build 26300.9711, despite its WIN11-CLIENT01 hostname. Preserve the existing configuration and investigate further only if OS compatibility becomes a real blocker. Wazuh and Sysmon installation status remains unconfirmed beyond the initial service-name checks.
+
+- Duration
+16 minutes (Planned: 20 minutes)
+
+- Notes
+### 2026-10-11 • 10:55 to 11:07
+- Goal
+Preserve and verify existing CyberOps documentation and repository state, passively inspect the existing VMware/Windows Server environment, identify Project 1 capabilities that Project 2 can reuse, document the handover and CyberOps resumption point.
+
+- Definition of Done
+Existing NS-DC01 environment is inspected without modifying or testing it
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Current efforts focused on establishing a verified baseline configuration for NS-DC01, documenting its existing state, and identifying reusable administrative assets from Project 1. This foundational work is crucial for preparing the environment for Project 2, with a strong emphasis on preserving current capabilities and avoiding premature changes.
+
+Tasks Completed:
+*   Verified and documented the configuration of NS-DC01, confirming it runs Windows Server 2025.
+*   Confirmed the presence and configuration of Active Directory Domain Services (AD DS) and DNS roles on NS-DC01.
+*   Documented the `northstar.local` domain and its associated network settings.
+*   Confirmed VMware NAT network mode is in use for the environment.
+*   Identified existing Project 1 administration and PowerShell capabilities with potential for reuse in future projects.
+*   Reviewed the high-level scope and requirements for Project 2.
+
+Issues Encountered:
+None
+
+Next Steps:
+*   Continue analysis of Project 2 requirements against the established baseline to identify integration points and potential impact.
+*   Further evaluate the identified reusable Project 1 administrative and PowerShell capabilities for direct application or adaptation in Project 2.
+*   Develop a preliminary design or plan for Project 2 that leverages the existing environment without introducing breaking changes.
+
+Notes:
+The primary focus of this phase was to meticulously document and understand the current state of the environment, particularly NS-DC01, without making any modifications. This ensures a stable baseline is established before initiating Project 2 activities. A key guiding principle is to preserve existing capabilities and assets from Project 1 wherever possible, streamlining future efforts. This preparatory work is essential for a smooth transition into Project 2 planning and implementation.
+
+- Working Story
+Preserving existing capabilities, establishing the baseline, preparing for Project 2 without changing the environment.
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 11:09:12
+Reviewer Notes: NS-DC01 uses 192.168.148.10/24, gateway 192.168.148.2, loopback DNS, VMware NAT, workstation Group Policy application remains unverified.
+
+- Duration
+12 minutes (Planned: 60 minutes)
+
+- Notes
+### 2026-10-08 • 05:19 to 05:30
+- Goal
+Generate a small amount of intentional, benign activity on NS-DC01 and determine how that activity appears in Windows security telemetry.
+
+- Definition of Done
+NS-DC01 is accessible, One or two controlled administrative actions are performed, Resulting Windows events are queried, At least one event can be associated with an action you intentionally performed, You understand the basic relationship: Action ↓ Windows records event ↓ PowerShell retrieves event ↓ Analyst investigates
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+An initial experimental session was conducted within the CyberOps Sandbox on NS-DC01 to evaluate the reliability of existing Windows Security telemetry in observing intentional, simple process and file activities. The session established that the current Security log configuration does not reliably expose the tested activities, identifying significant visibility gaps. This work underscores a hands-on, experimental methodology focused on understanding and improving telemetry from the ground up, treating failures to observe expected activity as critical engineering findings.
+
+Tasks Completed:
+*   Tested the ability of existing Windows Security telemetry to observe intentional process and simple file creation/removal activities on NS-DC01.
+*   Attempted to observe `Notepad.exe` process creation using Event ID 4688 within the Windows Security log.
+*   Confirmed that the current Windows Security log configuration does not reliably expose the simple process/file activity tested.
+
+Issues Encountered:
+*   **Conceptual Clarity:** Initial struggle to clearly define "telemetry" until directly linked to observable Windows events, and differentiating between an event occurring versus an activity being reliably observable.
+*   **Interpretation Bias:** Initial tendency to misinterpret ambient events as direct evidence of specific test activity rather than requiring explicit observations.
+*   **Audit Policy Oversight:** Initially assumed that simple folder creation/removal would inherently generate useful Security events without first verifying configured audit policies for such activity.
+*   **Event ID 4688 Misinterpretation:**
+    *   The test for `Notepad.exe` via Event ID 4688 did not produce the expected observation, necessitating the interpretation of a negative result instead of a successful detection.
+    *   Initially overemphasized the mere existence of Event ID 4688, failing to adequately consider the specific audit policy configurations required for comprehensive process visibility.
+    *   Experienced issues with incorrect `Properties[]` indexes during earlier field extraction attempts for Event ID 4688, leading to misleading field labels and values.
+*   **Focus on Success vs. Gaps:** Initial tendency to focus too heavily on finding successful event detections, rather than recognizing that the failure to observe an expected action is itself a valuable telemetry finding that highlights a visibility gap.
+
+Next Steps:
+*   Investigate and implement necessary audit policy changes on NS-DC01 to ensure reliable observation of basic process creation (e.g., Event ID 4688) and relevant file system activities.
+*   Re-run tests after audit policy adjustments to confirm improved telemetry visibility and validate expected event generation.
+*   Document specific audit policies and event IDs identified as crucial for observing common adversary techniques within the environment.
+
+Notes:
+This experimental session is foundational to the CyberOps Sandbox's development, emphasizing a hands-on, iterative construction methodology:
+*   **Experimental Build-Out:** The sandbox is being built from the ground up by performing controlled activities, observing what the environment actually sees, identifying visibility gaps, and then improving the environment based on empirical evidence.
+*   **Learning Through Experimentation:** Prioritizing hands-on construction and learning through controlled experiments over deploying pre-built SOC stacks.
+*   **Leveraging Existing Infrastructure:** Utilizing existing Windows infrastructure, PowerShell, and Windows Event Logs as the initial investigation tools.
+*   **Valuing Negative Results:** Explicitly treating the distinction between activity occurring and activity being observable, and recognizing visibility gaps as legitimate and crucial engineering findings.
+*   **Telemetry-First Approach:** Building towards robust detection capabilities by first understanding, improving, and validating the underlying telemetry sources.
+*   **Transparent Documentation:** A commitment to documenting both successful discoveries and encountered challenges/mistakes as part of the continuous learning and improvement process.
+
+- Working Story
+The CyberOps Sandbox is being built experimentally from the ground up: perform controlled activity, observe what the environment can actually see, identify visibility gaps, and then improve the environment based on evidence, Hands-on construction rather than a prebuilt SOC stack, Learning through controlled experimentation, Existing infrastructure being reused as the foundation, PowerShell and Windows Event Logs as the first investigation tools, The distinction between activity occurring and activity being observable, Treating negative results and visibility gaps as legitimate engineering findings, Building toward detection by first understanding and improving telemetry, Documentation of both discoveries and mistakes
+
+- Friction and AI Gaps
+The concept of telemetry initially wasn't clear until it was connected directly to the Windows events being observed, It was initially tempting to interpret events occurring around the test activity as evidence that the activity caused them, Understanding the difference between an event existing and a particular activity being reliably observable was the main conceptual challenge, The Event ID 4688 test did not produce the expected Notepad observation, requiring interpretation of a negative result rather than a successful detection
+
+- What the AI Missed
+The session initially assumed that simple folder creation/removal might produce useful Security events without first establishing whether the configured audit policies covered that activity, - The AI initially treated the existence of Event ID 4688 as stronger evidence of process visibility than was warranted, - The earlier 4688 field extraction used incorrect Properties[] indexes, producing misleading field labels/values, - The AI initially focused too heavily on finding a successful event rather than recognizing that failure to observe an expected action is itself a valuable telemetry finding
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-08 05:34:39
+Reviewer Notes: The current Security Event Log is not yet sufficient for reliable process/file activity visibility. Must understand Windows Auditing behavior before adding new security tooling.
+
+- Duration
+11 minutes (Planned: 15 minutes)
+
+- Notes
+Important terminology learned Telemetry: observable information generated by a system that can be used to understand and investigate activity, Important investigation lesson Correlation ≠ causation, An event occurring at approximately the same time as an action does not prove that the action caused the event
+### 2026-10-07 • 05:12 to 05:17
+- Goal
+Establish the documentation foundation for the existing Northstar environment.
+
+- Definition of Done
+Document the existing state of NS-DC01, Windows Server, Active Directory, DNS, Network foundation, Current virtualization environment
+
+- Goal Achieved
+❌ No
+
+Summary:
+The previous work session has been deemed unsatisfactory and requires a complete re-execution. No tasks from this session can be considered successfully completed at this time.
+
+Tasks Completed:
+None
+
+Issues Encountered:
+The recently completed work session requires a full redo due to unsatisfactory outcomes.
+
+Next Steps:
+Re-execute the entire session to achieve the desired results.
+
+Notes:
+*   No specific struggles were encountered during the initial attempt, despite the need for re-work.
+*   No discrepancies or errors related to AI tools were identified.
+*   No particular emphasis or narrative is required for this update.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-07 05:18:06
+Reviewer Notes: 
+
+- Duration
+4 minutes (Planned: 20 minutes)
+
+- Notes
+
+
+## Screenshot – Process Creation Telemetry
+![Process Creation Telemetry](../screenshots/2026-10-07_052909_process-creation-telemetry.png)
+
+## Screenshot – Security Event Distribution
+![Security Event Distribution](../screenshots/2026-10-07_053206_security-event-distribution.png)
+
+---
+
+## Session – 05:22 to 05:37
+- Goal
+Establish what security telemetry Northstar already has
+
+- Definition of Done
+NS-DC01 is confirmed operational., Existing DNS/event-log baseline is acknowledged rather than recreated., Windows Security Event Log is inspected., Recent security events are identified., At least one useful event type is recognized for future investigation.
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+The current phase of the CyberOps Sandbox development focused on incrementally building security operational capabilities from existing Windows infrastructure, specifically NS-DC01. This involved establishing the available security telemetry and confirming that Windows Security Event Logs are a queryable data source for investigations, aligning with a hands-on learning approach rather than deploying a pre-configured SOC solution.
+
+Tasks Completed:
+*   Identified existing security telemetry on NS-DC01.
+*   Confirmed that Windows Security Event Logs can be queried as an investigation data source.
+
+Issues Encountered:
+*   Initial lack of clarity regarding the practical definition of "telemetry."
+*   Misconception that an additional infrastructure baseline was required, despite previous baselining.
+*   Ongoing learning challenges related to understanding Windows Event IDs and their provided information.
+*   Difficulty experienced in extracting useful fields from Event ID 4688.
+
+Next Steps:
+(No specific next steps were provided in the rough notes.)
+
+Notes:
+The overarching strategy for the CyberOps Sandbox is to build it incrementally from an existing Windows infrastructure foundation. This approach is designed to foster learning security operations through direct investigation of the environment, contrasting with the installation of a prebuilt SOC stack.
+AI did not miss or misinterpret any information provided.
+
+- Working Story
+Built the CyberOps Sandbox incrementally from an existing Windows infrastructure foundation, learning security operations by directly investigating the environment rather than installing a prebuilt SOC stack.
+
+- Friction and AI Gaps
+Initially unclear what "telemetry" meant in practical terms, the session initially appeared to require another infrastructure baseline even though the environment had already been baselined previously, understanding Windows Event IDs and what information they provide is still new, extracting useful fields from Event ID 4688 was less straightforward than expected.
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-07 05:38:34
+Reviewer Notes: 
+
+- Duration
+14 minutes (Planned: 10 minutes)
+
+- Notes
+### 2026-09-30 • 06:46 to 06:55
+- Goal
+Baseline the Existing Northstar Environment
+
+- Definition of Done
+all information, specs and working information is gathered
+
+- Goal Achieved
+✅ Yes
+
+Summary:
+Initial project baselining activities have been completed, with key specifications documented.
+
+Tasks Completed:
+* Noted baseline specifications for the project.
+
+Issues Encountered:
+No issues or significant struggles were encountered during this period.
+
+Next Steps:
+Next steps are not detailed in the current notes. Further planning will be required to define upcoming tasks.
+
+Notes:
+No additional notes were provided for this update.
+
+- Working Story
+None
+
+- Friction and AI Gaps
+None
+
+- What the AI Missed
+None
+
+- AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-09-30 06:58:14
+Reviewer Notes: Host OS: Windows 11 Home, build 26200
+
+- Duration
+9 minutes (Planned: 180 minutes)
+
+- Notes
+Gaming PC: your primary Windows host for the Help Desk Lab / future homelab
+
+
+## Screenshots and proof
+### Highlight: Wazuh Powershell Event Dashboard Visibility
+![Wazuh Powershell Event Dashboard Visibility](../screenshots/2026-11-18_142508_wazuh-powershell-event-dashboard-visibility.png)
+The source log labels this capture “Wazuh Powershell Event Dashboard Visibility.”
+### Highlight: Telemetry Visibility Gap
+![Telemetry Visibility Gap](../screenshots/2026-10-08_053048_telemetry-visibility-gap.png)
+The source log labels this capture “Telemetry Visibility Gap.”
+### Highlight: Wazuh Powershell Event Ingestion Confirmed
+![Wazuh Powershell Event Ingestion Confirmed](../screenshots/2026-11-17_060947_wazuh-powershell-event-ingestion-confirmed.png)
+The source log labels this capture “Wazuh Powershell Event Ingestion Confirmed.”
+
+
+## Trials and tribulations
+### 2026-11-18 • 14:08 to 14:40
+### Goal
+Verify that PowerShell Script Block Logging events (Event ID 4104) collected from WIN11-CLIENT01 are searchable in the Wazuh Dashboard, establish a reliable workflow for inspecting endpoint telemetry, prepare to transition into detection engineering.
+
+### Definition of Done
+All required virtual machines pass the pre-session readiness check, Wazuh Dashboard is accessible, WIN11-CLIENT01 appears as an active agent, PowerShell Event ID 4104 events are searchable in the dashboard, the controlled test marker CYBEROPS-WAZUH-TEST-20261117-THIRD can be located if available in the indexed data, relevant event fields are inspected including endpoint name, event ID, channel, timestamp, and script-block message, findings and indexing limitations are documented, next steps for detection engineering are identified.
+
+### Goal Achieved
+❌ No
+
+**Summary:**
+This documentation outlines the successful establishment and validation of centralized PowerShell Script Block Logging telemetry within Wazuh. Key activities included enabling and configuring Filebeat archive forwarding, inspecting raw PowerShell Event ID 4104 records, identifying security policy discovery activity, and validating controlled endpoint actions against raw SIEM archives. The work specifically focused on distinguishing successful event ingestion from dashboard indexing limitations, thereby laying a critical foundation for subsequent detection engineering efforts.
+
+**Tasks Completed:**
+*   Inspected existing PowerShell Event ID 4104 records within Wazuh Threat Hunting.
+*   Examined event JSON and script-block contents to understand current telemetry.
+*   Identified security-policy discovery activity using `secedit` and `PasswordHistorySize` commands.
+*   Enabled Filebeat Wazuh archive forwarding to ensure all raw events are stored.
+*   Validated the Filebeat configuration for correctness.
+*   Successfully restarted the Filebeat service.
+*   Generated controlled `Get-LocalUser` activity on the designated endpoint, WIN11-CLIENT01, to create new events.
+*   Verified the resulting Event ID 4104 records locally on WIN11-CLIENT01.
+*   Confirmed that the generated events successfully reached `/var/ossec/logs/archives/archives.json` on the Wazuh manager.
+
+**Issues Encountered:**
+*   Difficulty in distinguishing between successful raw event ingestion into archives and their subsequent indexing for dashboard visibility.
+*   Initial generation of test activity occurred on the physical Windows host rather than the intended monitored Windows client.
+*   Challenges in determining why newly archived events were not appearing in the expected dashboard search results despite successful archival.
+*   Time spent on isolating and troubleshooting the telemetry pipeline, diverting focus from direct progression into detection engineering.
+
+**Next Steps:**
+*   Investigate and resolve the discrepancy between raw archive ingestion and dashboard visibility for the new Event ID 4104 records.
+*   Develop new detection rules or dashboards utilizing the validated PowerShell Script Block Logging telemetry.
+*   Expand controlled activity generation to cover additional PowerShell-based attack techniques.
+
+**Notes:**
+The AI assistant's guidance led to several inefficiencies during this process. Specifically, it did not emphasize establishing the correct execution host early enough, allowing initial testing to proceed on an unmonitored physical Windows host. Furthermore, the AI treated dashboard visibility and raw archive ingestion too closely as a single validation step. A more effective approach would have been to explicitly separate and validate the distinct stages of the telemetry pipeline: endpoint event generation, agent forwarding, manager archiving, and finally, indexer/dashboard visibility.
+
+### Working Story
+Improving centralized PowerShell telemetry visibility, identifying and correcting disabled Filebeat archive forwarding, inspecting actual Windows Script Block Logging records, validating controlled endpoint activity through raw SIEM archives, distinguishing successful ingestion from dashboard indexing limitations, establishing a foundation for subsequent detection engineering.
+
+### Friction and AI Gaps
+Distinguishing raw event ingestion from dashboard indexing, initially generating test activity on the physical Windows host instead of the monitored Windows client, determining why newly archived events were not appearing in the expected dashboard search results, spending additional time isolating the telemetry pipeline rather than progressing directly into detection engineering.
+
+### What the AI Missed
+The AI did not establish the execution host early enough and initially allowed testing to proceed on the physical Windows host. It also treated dashboard visibility and raw archive ingestion too closely as one validation step. The investigation should have separated endpoint event generation, agent forwarding, manager archiving, and indexer/dashboard visibility from the beginning.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-18 14:42:53
+Reviewer Notes: The session made meaningful infrastructure progress but did not complete the full detection-engineering objective. Filebeat archive forwarding was disabled and was successfully enabled. Existing PowerShell events were searchable in the dashboard, with eight matching records observed. Newly generated Get-LocalUser events were confirmed in the manager's raw archive, but their appearance in the dashboard remains unresolved.
+
+### Duration
+31 minutes (Planned: 60 minutes)
+
+### Notes
+### 2026-11-17 • 05:05 to 06:11
+### Goal
+Integrate WIN11-CLIENT01 into the Wazuh monitoring environment, register its Wazuh agent with ubuntu-siem01, verify agent connectivity, generate controlled Windows activity, confirm centralized telemetry ingestion.
+
+### Definition of Done
+[ ] Windows endpoint powered on and network connectivity verified, [ ] Wazuh agent installed on WIN11-CLIENT01, [ ] Agent registered with ubuntu-siem01, [ ] Endpoint appears as active in Wazuh, [ ] Windows Security telemetry received by Wazuh, [ ] PowerShell activity successfully collected, [ ] At least one controlled event located and verified in the dashboard.
+
+### Goal Achieved
+✅ Yes
+
+**Summary:**
+Successfully implemented and validated end-to-end collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry. This involved enabling script-block auditing on a Windows endpoint via the registry, configuring the Wazuh agent to collect these events, and setting up the Wazuh manager to retain raw JSON events in its archives. Key issues encountered during configuration, including incorrect manager XML and policy activation nuances, were identified and resolved, culminating in the successful verification of controlled PowerShell events reaching the centralized SIEM and being stored in JSON format.
+
+**Tasks Completed:**
+*   Configured Windows PowerShell Script Block Logging through the Windows registry.
+*   Verified local generation of PowerShell Event ID 4104 on the Windows endpoint.
+*   Confirmed the Wazuh agent was successfully collecting the PowerShell Operational event channel.
+*   Enabled Wazuh JSON event archiving on the manager.
+*   Corrected the Wazuh manager configuration XML to enable archiving.
+*   Validated the corrected Wazuh manager configuration.
+*   Successfully restarted the Wazuh manager service.
+*   Verified that controlled PowerShell test events reached the `ubuntu-siem01` Wazuh manager.
+*   Confirmed that these events were written to `/var/ossec/logs/archives/archives.json`.
+
+**Issues Encountered:**
+*   **Wazuh Event Visibility:** PowerShell events were initially visible locally on the Windows endpoint but were not appearing in Wazuh, suggesting a collection or forwarding issue.
+*   **Script Block Logging Activation:** Script Block Logging was not enabled through the initially expected registry policy, requiring a specific registry key modification.
+*   **PowerShell Session Refresh:** After enabling the Script Block Logging policy, a fresh PowerShell process was required before controlled events would appear, a detail initially overlooked.
+*   **Wazuh Manager Configuration Errors:** The Wazuh manager configuration XML contained duplicate root elements, which prevented JSON archiving from being enabled successfully until corrected.
+*   **Troubleshooting Focus:** Initial troubleshooting efforts were misdirected, focusing too heavily on Wazuh agent collection and manager forwarding before adequately confirming the Windows endpoint was generating the specific controlled PowerShell events.
+
+**Next Steps:**
+No further next steps were outlined for this specific implementation and validation phase.
+
+**Notes:**
+*   A key lesson learned during troubleshooting was the critical importance of verifying local event generation on the source endpoint *before* investigating collection or forwarding issues with the SIEM agent.
+*   The correct sequence for verifying end-to-end telemetry was established: enable logging, generate a controlled event, verify the event locally on the source, then verify its presence in the manager's archives.
+*   Careful attention must be paid to PowerShell policy activation, as some changes (like Script Block Logging via registry) require opening a fresh PowerShell process to take effect.
+
+### Working Story
+Successful implementation and validation of end-to-end Windows PowerShell telemetry collection, enabling script-block auditing on the endpoint, configuring Wazuh to retain raw JSON events, troubleshooting and correcting the manager configuration, proving that controlled Event ID 4104 records traveled from the Windows endpoint to the centralized SIEM.
+
+### Friction and AI Gaps
+PowerShell events were initially visible locally but not appearing in Wazuh, Script Block Logging was not enabled through the expected registry policy, the policy change required opening a fresh PowerShell process before the controlled event appeared, the Wazuh manager configuration also contained duplicate root XML elements that needed correction before archiving could be enabled successfully.
+
+### What the AI Missed
+The initial troubleshooting focused too heavily on Wazuh collection and forwarding before confirming that Windows was generating the specific controlled PowerShell events, the first test commands did not account for Script Block Logging being disabled, the need to open a fresh PowerShell process after enabling the policy was identified later. The troubleshooting ultimately established the correct sequence: enable logging, generate a controlled event, verify it locally, then verify it in the manager archive.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-17 06:12:58
+Reviewer Notes: The session achieved a significant infrastructure milestone. The evidence establishes that PowerShell Script Block Logging is enabled, Event ID 4104 records are generated locally, the Wazuh agent forwards those records, and the Wazuh manager stores them in its raw event archive.
+
+### Duration
+65 minutes (Planned: 40 minutes)
+
+### Notes
+### 2026-11-16 • 07:12 to 08:01
+### Goal
+Establish the Wazuh SIEM infrastructure on ubuntu-siem01, validate the Ubuntu Server environment, deploy the all-in-one Wazuh stack, confirm dashboard accessibility, prepare the environment for Windows endpoint integration.
+
+### Definition of Done
+Ubuntu LTS install confirmed & Wazuh deployment completed
+
+### Goal Achieved
+✅ Yes
+
+**Summary:**
+This documentation details the process of re-establishing a compatible Ubuntu server environment within VMware, configuring secure remote administration, and deploying a functional Wazuh Security Information and Event Management (SIEM) stack. The initiative focused on rebuilding the infrastructure while preserving existing VMware hardware configurations, addressing initial operating system compatibility issues, overcoming critical resource constraints, and ensuring the accessibility and health of the deployed security monitoring services.
+
+**Tasks Completed:**
+*   Reinstallation of Ubuntu Server 24.04.5 LTS.
+*   Configuration of VMware boot settings to ensure proper virtual disk boot.
+*   Execution of comprehensive Ubuntu package updates.
+*   Expansion of the LVM root filesystem to accommodate application requirements.
+*   Installation and configuration of OpenSSH for secure remote access.
+*   Validation of remote SSH connectivity.
+*   Deployment of the Wazuh Indexer component.
+*   Deployment of the Wazuh Manager component.
+*   Deployment of the Wazuh Dashboard component.
+*   Verification of all deployed Wazuh service health.
+*   Validation of Wazuh Dashboard accessibility.
+
+**Issues Encountered:**
+*   Initial attempt to use Ubuntu 26.04 resulted in compatibility issues, necessitating a rollback to 24.04.5 LTS.
+*   Difficulty ensuring the virtual machine booted from the existing virtual disk rather than the replacement ISO after OS reinstallation.
+*   An unexpected full operating system reinstallation was required due to prior issues, consuming additional time.
+*   The OpenSSH server package was initially missing, leading to failed SSH connection attempts.
+*   Stale SSH host identification entries caused connection warnings and required manual client-side cleanup.
+*   Physical Windows host storage exhaustion occurred during the Wazuh installation, interrupting the deployment process.
+*   Recovery and continuation of the interrupted Wazuh installation required additional troubleshooting and resource management.
+
+**Next Steps:**
+No explicit next steps were provided in the rough notes.
+
+**Notes:**
+*   Initial OS compatibility guidance obtained via AI was not sufficiently validated, leading to a need for OS reinstallation. This highlights the importance of independent verification of critical infrastructure compatibility.
+*   The VMware ISO boot configuration required more intensive troubleshooting than anticipated, indicating a need for clearer instructions or pre-validation in future similar tasks.
+*   The initial SSH service check assumed OpenSSH was installed, which was incorrect. Future diagnostic steps should explicitly confirm package installation before checking service status.
+*   A typo in a package inspection command led to wasted diagnostic time. Emphasize careful command entry and validation.
+*   A critical oversight was not checking the host disk capacity *before* beginning the Wazuh deployment, directly leading to installation interruption and recovery efforts. Future deployments must include thorough pre-flight checks of all system resources.
+
+### Working Story
+Establishing a compatible SIEM server environment, rebuilding the Ubuntu infrastructure while preserving VMware hardware configuration, configuring secure remote administration, deploying and recovering a centralized security monitoring stack, validating service health and dashboard accessibility, overcoming infrastructure resource constraints.
+
+### Friction and AI Gaps
+Initial Ubuntu 26.04 compatibility issue, booting from the replacement ISO instead of the existing virtual disk, reinstalling the operating system, missing OpenSSH server package, stale SSH host identification, physical Windows host storage exhaustion during Wazuh installation, recovering the interrupted installation.
+
+### What the AI Missed
+Initial OS compatibility guidance was insufficiently validated, the ISO boot configuration required additional troubleshooting, the initial SSH service check assumed OpenSSH was installed, one package inspection command contained a typo, host disk capacity was not checked before beginning the Wazuh deployment.
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-16 08:02:57
+Reviewer Notes: Ubuntu Server 24.04.5 LTS is installed on ubuntu-siem01, Wazuh components are version 4.14.10, all three core services report active, dashboard access over HTTPS is confirmed.
+
+### Duration
+49 minutes (Planned: 50 minutes)
+
+### Notes
+VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Ubuntu root filesystem expanded to 48 GB, approximately 23 GB available at final verification. Ubuntu IP address: 192.168.20.131. OpenSSH is installed and active. Physical Windows D: drive storage was recovered, leaving approximately 112 GB available.
+### 2026-11-04 • 05:49 to 06:19
+### Goal
+Deploy Wazuh all-in-one on Ubuntu Server and establish the centralized monitoring foundation.
+
+### Definition of Done
+Ubuntu is prepared for Wazuh deployment, Wazuh all-in-one installation completes successfully, Manage, indexer, and dashboard services are operational, Required service ports and network access are verified, Dashboard is accessible from the physical Windows host, or any remaining access blocker is identified and documented.
+
+### Goal Achieved
+❌ No
+
+
+Summary:
+Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+
+Tasks Completed:
+Reviewed Ubuntu 26.04.1 compatibility with the Wazuh deployment, verified the Wazuh signing key, identified Ubuntu Server 24.04 LTS as the documented installation target, obtained the Ubuntu Server 24.04.5 ISO, prepared the existing virtual machine for OS replacement.
+
+Issues Encountered:
+The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+
+Next Steps:
+Need to finish Ubuntu 26.04.5 LTS iso swap to finish Wazuh installation
+
+Notes:
+
+
+
+### Working Story
+None
+
+### Friction and AI Gaps
+The initial Ubuntu version selection introduced an avoidable compatibility detour, distinguishing between the ISO attached to the VM and the operating system actually booted, confirming the appropriate Wazuh installation path.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-04 06:22:23
+Reviewer Notes: Keep the existing VM hardware configuration. Confirm Ubuntu 24.04.5 is actually installed before proceeding with Wazuh.
+
+### Duration
+30 minutes (Planned: 45 minutes)
+
+### Notes
+Existing VM configuration: 4 vCPU, 8 GB RAM, 50 GB virtual disk, VMnet2 network. Wazuh signing key was downloaded successfully.
+### 2026-11-03 • 05:57 to 06:34
+### Goal
+Deploy and establish the Ubuntu Server foundation for centralized security monitoring.
+
+### Definition of Done
+The session is complete when Ubuntu Server is installed and operational, the VM has a working network connection, resource allocation is documented, and the environment is ready for Wazuh installation.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+A dedicated Ubuntu Server 26.04.1 LTS virtual machine has been successfully provisioned in VMware, establishing a foundational Linux server for centralized security monitoring. The VM was integrated into the existing segmented OPNsense LAN, with core system configuration, network validation, and remote administration capabilities established. This prepares the environment for future Wazuh deployment without requiring a rebuild of existing infrastructure.
+
+Tasks Completed:
+*   Provisioned a dedicated Ubuntu Server 26.04.1 LTS virtual machine in VMware.
+*   Configured the VM with 2 CPU cores, 4 GB RAM, and a 50 GB virtual disk.
+*   Integrated the VM into the existing OPNsense LAN via VMnet2.
+*   Completed the Ubuntu installation process.
+*   Successfully performed an account recovery and password reset.
+*   Updated all system packages to the latest versions.
+*   Verified hostname and network configuration (IP address, subnet mask).
+*   Confirmed gateway connectivity and external internet access.
+*   Validated DNS resolution.
+*   Enabled the OpenSSH Server.
+*   Established successful remote SSH access from the physical Windows host.
+
+Issues Encountered:
+*   Initial Ubuntu login failed due to an incorrect or forgotten password, necessitating entry into recovery mode to identify the existing account and perform a password reset.
+*   Conservative VM memory allocation was required due to initial host resource availability constraints.
+
+Next Steps:
+*   Proceed with the installation and configuration of Wazuh on the newly provisioned Ubuntu server.
+*   Review host resource availability to potentially increase VM memory allocation if performance bottlenecks are observed or future requirements demand it.
+
+Notes:
+*   The current VM memory allocation of 4 GB is functional but was influenced by host resource limitations. Performance should be monitored during Wazuh deployment and operation, and memory adjusted as needed to ensure optimal security monitoring performance.
+*   The successful integration into the OPNsense LAN through VMnet2 ensures proper network segmentation and controlled communication for the security monitoring solution.
+
+### Working Story
+Establishing a dedicated Linux server foundation for centralized security monitoring, integrating the new server into the existing segmented virtual network, validating connectivity and remote administration, preparing the environment for Wazuh deployment without rebuilding existing infrastructure.
+
+### Friction and AI Gaps
+The Ubuntu login initially failed because the configured password was incorrect or had been forgotten, requiring recovery mode to identify the existing account and reset its password. Initial host resource availability also required conservative VM memory allocation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-11-03 06:35:12
+Reviewer Notes: Ubuntu Server installation and baseline validation were completed successfully. The server is operational and accessible remotely from the physical Windows host. Network connectivity, DNS resolution, package updates, and SSH functionality were verified.
+
+### Duration
+36 minutes (Planned: 40 minutes)
+
+### Notes
+Hostname: ubuntu-siem01, operating system: Ubuntu 26.04.1 LTS, kernel: Linux 7.0.0-42-generic, architecture: x86_64, network interface: ens33, IPv4 address: 192.168.20.131/24, gateway: 192.168.20.1, VM network: VMnet2, VM allocation: 2 CPU cores, 4 GB RAM, 50 GB disk, SSH service: enabled and active, remote access: verified from Windows PowerShell.
+### 2026-10-26 • 05:52 to 06:38
+### Goal
+Validate practical SIEM deployment options for CyberOps Sandbox, establish the available hosting resources and constraints, select a feasible Wazuh deployment approach, prepare the Week 2 implementation starting point.
+
+### Definition of Done
+Confirm usable host disk capacity and current memory constraints, identify existing VMware VM resource allocations and relevant network connectivity, select a practical SIEM hosting approach, document unresolved dependencies and the first implementation milestone.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Significant progress was made in establishing foundational infrastructure and planning for the development of security operations capabilities. Key activities included reviewing existing network infrastructure, confirming baseline checks, establishing remaining Month 1 tasks, and planning for Wazuh deployment. The primary constraint identified is limited host memory, which requires further evaluation before proceeding with new installations.
+
+Tasks Completed:
+*   Reviewed the existing OPNsense virtual firewall and segmented network infrastructure.
+*   Confirmed completion of Windows endpoint and event-log baseline checks.
+*   Established the remaining Month 1 foundation tasks.
+*   Planned Ubuntu Server deployment and Wazuh installation.
+*   Defined the first Month 2 milestone: collecting and investigating genuine Windows endpoint telemetry.
+
+Issues Encountered:
+*   Available host memory is a significant deployment constraint. A previous check indicated approximately 4.9 GB available while lab VMs were running, which necessitates a thorough evaluation of Wazuh resource allocation prior to installation to ensure stable operation.
+
+Next Steps:
+*   Evaluate Wazuh resource requirements and optimize host memory allocation.
+*   Proceed with Ubuntu Server deployment.
+*   Install and configure Wazuh.
+*   Begin collecting and investigating genuine Windows endpoint telemetry to meet the Month 2 milestone.
+
+Notes:
+The project is transitioning from building and validating foundational infrastructure to developing practical security operations capabilities. There is a strong emphasis on leveraging real telemetry for evidence-based investigations within a reproducible environment.
+
+### Working Story
+The transition from building and validating foundational infrastructure to developing practical security operations capabilities, with an emphasis on real telemetry, evidence-based investigation, and a reproducible environment.
+
+### Friction and AI Gaps
+Available host memory is the main deployment constraint. The previous check showed approximately 4.9 GB available while the lab VMs were running, so Wazuh resource allocation needs to be evaluated before installation.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-26 06:39:06
+Reviewer Notes: Month 1 is substantially established at the infrastructure level. Remaining work includes evaluating available resources and installing Ubuntu Server. Month 2 begins with SIEM deployment, Windows endpoint integration, telemetry validation, and the first investigation.
+
+### Duration
+45 minutes (Planned: 45 minutes)
+
+### Notes
+The target is to align the Month 1 checkpoint with the final week of October and begin Month 2 during the first week of November. The schedule is flexible if deployment requires additional troubleshooting.
+### 2026-10-25 • 18:32 to 18:48
+### Goal
+Establish the current CyberOps infrastructure baseline and identify the technical prerequisites for the November SIEM build, verify host resources, confirm existing VM and network state, identify blockers before installing anything.
+
+### Definition of Done
+Record available host RAM and disk capacity, identify the relevant VMware VMs and their current resource allocations, confirm the intended Windows endpoint and server roles, establish whether a Wazuh deployment is feasible without unnecessary lab changes.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Initial validation of the existing lab infrastructure was performed to establish an evidence-based starting point for the November CyberOps SIEM and detection engineering work. This involved reviewing network baselines, verifying endpoint network identity and connectivity, and confirming the status of core Windows event logging sources on a target workstation. A key finding was the absence of dedicated endpoint telemetry agents, identifying telemetry collection as the next critical technical milestone. No system or network configuration changes were made, preserving the existing infrastructure.
+
+Tasks Completed:
+*   Reviewed the existing OPNsense WAN, LAN, and SERVERS network baseline.
+*   Verified WIN11-CLIENT01 network identity and connectivity configuration.
+*   Confirmed WIN11-CLIENT01 endpoint IPv4 address (192.168.20.165) with gateway (192.168.20.1).
+*   Checked for existing Wazuh and Sysmon service installations on the endpoint; neither were found.
+*   Verified Windows Security logging is enabled (29,072 records observed).
+*   Verified Windows System logging is enabled (1,792 records observed).
+*   Verified Windows PowerShell Operational logging is enabled (483 records observed).
+*   Established that elevated PowerShell privileges are required for inspecting the Security log.
+*   Made no system or network configuration changes to the existing environment.
+
+Issues Encountered:
+*   Initial attempts to inspect the Windows Security log via PowerShell failed due to insufficient privileges, necessitating elevation.
+*   The endpoint's operating system identification differed from the expected Windows 11 designation.
+*   Available host memory is constrained while the existing virtual machines are running, potentially impacting future resource allocation for SIEM components.
+
+Next Steps:
+*   Deploy and configure endpoint telemetry agents (e.g., Wazuh, Sysmon) on WIN11-CLIENT01.
+*   Further investigate the discrepancy in the endpoint's reported operating system identification.
+*   Address host memory constraints to ensure adequate resources for upcoming SIEM and detection engineering tools.
+
+Notes:
+This initial validation effort successfully confirmed the foundational status of the lab environment prior to new deployments. The existing infrastructure, including network configuration, was preserved without modification. Confirmation of active Windows event sources provides a baseline for initial detection capabilities, pending the deployment of advanced telemetry agents.
+
+### Working Story
+Validated the existing lab before deployment, confirmed available Windows event sources, identified endpoint telemetry collection as the next technical milestone, preserved existing infrastructure, established an evidence-based starting point for the November CyberOps SIEM and detection engineering work.
+
+### Friction and AI Gaps
+Initial Security log inspection failed because PowerShell lacked sufficient privileges, endpoint operating system identification differed from the expected Windows 11 designation, available host memory is constrained while the existing virtual machines are running.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-25 18:49:34
+Reviewer Notes: The endpoint's reported OS identity is Windows 10 Pro 26H2, build 26300.9711, despite its WIN11-CLIENT01 hostname. Preserve the existing configuration and investigate further only if OS compatibility becomes a real blocker. Wazuh and Sysmon installation status remains unconfirmed beyond the initial service-name checks.
+
+### Duration
+16 minutes (Planned: 20 minutes)
+
+### Notes
+### 2026-10-11 • 10:55 to 11:07
+### Goal
+Preserve and verify existing CyberOps documentation and repository state, passively inspect the existing VMware/Windows Server environment, identify Project 1 capabilities that Project 2 can reuse, document the handover and CyberOps resumption point.
+
+### Definition of Done
+Existing NS-DC01 environment is inspected without modifying or testing it
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Current efforts focused on establishing a verified baseline configuration for NS-DC01, documenting its existing state, and identifying reusable administrative assets from Project 1. This foundational work is crucial for preparing the environment for Project 2, with a strong emphasis on preserving current capabilities and avoiding premature changes.
+
+Tasks Completed:
+*   Verified and documented the configuration of NS-DC01, confirming it runs Windows Server 2025.
+*   Confirmed the presence and configuration of Active Directory Domain Services (AD DS) and DNS roles on NS-DC01.
+*   Documented the `northstar.local` domain and its associated network settings.
+*   Confirmed VMware NAT network mode is in use for the environment.
+*   Identified existing Project 1 administration and PowerShell capabilities with potential for reuse in future projects.
+*   Reviewed the high-level scope and requirements for Project 2.
+
+Issues Encountered:
+None
+
+Next Steps:
+*   Continue analysis of Project 2 requirements against the established baseline to identify integration points and potential impact.
+*   Further evaluate the identified reusable Project 1 administrative and PowerShell capabilities for direct application or adaptation in Project 2.
+*   Develop a preliminary design or plan for Project 2 that leverages the existing environment without introducing breaking changes.
+
+Notes:
+The primary focus of this phase was to meticulously document and understand the current state of the environment, particularly NS-DC01, without making any modifications. This ensures a stable baseline is established before initiating Project 2 activities. A key guiding principle is to preserve existing capabilities and assets from Project 1 wherever possible, streamlining future efforts. This preparatory work is essential for a smooth transition into Project 2 planning and implementation.
+
+### Working Story
+Preserving existing capabilities, establishing the baseline, preparing for Project 2 without changing the environment.
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-11 11:09:12
+Reviewer Notes: NS-DC01 uses 192.168.148.10/24, gateway 192.168.148.2, loopback DNS, VMware NAT, workstation Group Policy application remains unverified.
+
+### Duration
+12 minutes (Planned: 60 minutes)
+
+### Notes
+### 2026-10-08 • 05:19 to 05:30
+### Goal
+Generate a small amount of intentional, benign activity on NS-DC01 and determine how that activity appears in Windows security telemetry.
+
+### Definition of Done
+NS-DC01 is accessible, One or two controlled administrative actions are performed, Resulting Windows events are queried, At least one event can be associated with an action you intentionally performed, You understand the basic relationship: Action ↓ Windows records event ↓ PowerShell retrieves event ↓ Analyst investigates
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+An initial experimental session was conducted within the CyberOps Sandbox on NS-DC01 to evaluate the reliability of existing Windows Security telemetry in observing intentional, simple process and file activities. The session established that the current Security log configuration does not reliably expose the tested activities, identifying significant visibility gaps. This work underscores a hands-on, experimental methodology focused on understanding and improving telemetry from the ground up, treating failures to observe expected activity as critical engineering findings.
+
+Tasks Completed:
+*   Tested the ability of existing Windows Security telemetry to observe intentional process and simple file creation/removal activities on NS-DC01.
+*   Attempted to observe `Notepad.exe` process creation using Event ID 4688 within the Windows Security log.
+*   Confirmed that the current Windows Security log configuration does not reliably expose the simple process/file activity tested.
+
+Issues Encountered:
+*   **Conceptual Clarity:** Initial struggle to clearly define "telemetry" until directly linked to observable Windows events, and differentiating between an event occurring versus an activity being reliably observable.
+*   **Interpretation Bias:** Initial tendency to misinterpret ambient events as direct evidence of specific test activity rather than requiring explicit observations.
+*   **Audit Policy Oversight:** Initially assumed that simple folder creation/removal would inherently generate useful Security events without first verifying configured audit policies for such activity.
+*   **Event ID 4688 Misinterpretation:**
+    *   The test for `Notepad.exe` via Event ID 4688 did not produce the expected observation, necessitating the interpretation of a negative result instead of a successful detection.
+    *   Initially overemphasized the mere existence of Event ID 4688, failing to adequately consider the specific audit policy configurations required for comprehensive process visibility.
+    *   Experienced issues with incorrect `Properties[]` indexes during earlier field extraction attempts for Event ID 4688, leading to misleading field labels and values.
+*   **Focus on Success vs. Gaps:** Initial tendency to focus too heavily on finding successful event detections, rather than recognizing that the failure to observe an expected action is itself a valuable telemetry finding that highlights a visibility gap.
+
+Next Steps:
+*   Investigate and implement necessary audit policy changes on NS-DC01 to ensure reliable observation of basic process creation (e.g., Event ID 4688) and relevant file system activities.
+*   Re-run tests after audit policy adjustments to confirm improved telemetry visibility and validate expected event generation.
+*   Document specific audit policies and event IDs identified as crucial for observing common adversary techniques within the environment.
+
+Notes:
+This experimental session is foundational to the CyberOps Sandbox's development, emphasizing a hands-on, iterative construction methodology:
+*   **Experimental Build-Out:** The sandbox is being built from the ground up by performing controlled activities, observing what the environment actually sees, identifying visibility gaps, and then improving the environment based on empirical evidence.
+*   **Learning Through Experimentation:** Prioritizing hands-on construction and learning through controlled experiments over deploying pre-built SOC stacks.
+*   **Leveraging Existing Infrastructure:** Utilizing existing Windows infrastructure, PowerShell, and Windows Event Logs as the initial investigation tools.
+*   **Valuing Negative Results:** Explicitly treating the distinction between activity occurring and activity being observable, and recognizing visibility gaps as legitimate and crucial engineering findings.
+*   **Telemetry-First Approach:** Building towards robust detection capabilities by first understanding, improving, and validating the underlying telemetry sources.
+*   **Transparent Documentation:** A commitment to documenting both successful discoveries and encountered challenges/mistakes as part of the continuous learning and improvement process.
+
+### Working Story
+The CyberOps Sandbox is being built experimentally from the ground up: perform controlled activity, observe what the environment can actually see, identify visibility gaps, and then improve the environment based on evidence, Hands-on construction rather than a prebuilt SOC stack, Learning through controlled experimentation, Existing infrastructure being reused as the foundation, PowerShell and Windows Event Logs as the first investigation tools, The distinction between activity occurring and activity being observable, Treating negative results and visibility gaps as legitimate engineering findings, Building toward detection by first understanding and improving telemetry, Documentation of both discoveries and mistakes
+
+### Friction and AI Gaps
+The concept of telemetry initially wasn't clear until it was connected directly to the Windows events being observed, It was initially tempting to interpret events occurring around the test activity as evidence that the activity caused them, Understanding the difference between an event existing and a particular activity being reliably observable was the main conceptual challenge, The Event ID 4688 test did not produce the expected Notepad observation, requiring interpretation of a negative result rather than a successful detection
+
+### What the AI Missed
+The session initially assumed that simple folder creation/removal might produce useful Security events without first establishing whether the configured audit policies covered that activity, - The AI initially treated the existence of Event ID 4688 as stronger evidence of process visibility than was warranted, - The earlier 4688 field extraction used incorrect Properties[] indexes, producing misleading field labels/values, - The AI initially focused too heavily on finding a successful event rather than recognizing that failure to observe an expected action is itself a valuable telemetry finding
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-08 05:34:39
+Reviewer Notes: The current Security Event Log is not yet sufficient for reliable process/file activity visibility. Must understand Windows Auditing behavior before adding new security tooling.
+
+### Duration
+11 minutes (Planned: 15 minutes)
+
+### Notes
+Important terminology learned Telemetry: observable information generated by a system that can be used to understand and investigate activity, Important investigation lesson Correlation ≠ causation, An event occurring at approximately the same time as an action does not prove that the action caused the event
+### 2026-10-07 • 05:12 to 05:17
+### Goal
+Establish the documentation foundation for the existing Northstar environment.
+
+### Definition of Done
+Document the existing state of NS-DC01, Windows Server, Active Directory, DNS, Network foundation, Current virtualization environment
+
+### Goal Achieved
+❌ No
+
+Summary:
+The previous work session has been deemed unsatisfactory and requires a complete re-execution. No tasks from this session can be considered successfully completed at this time.
+
+Tasks Completed:
+None
+
+Issues Encountered:
+The recently completed work session requires a full redo due to unsatisfactory outcomes.
+
+Next Steps:
+Re-execute the entire session to achieve the desired results.
+
+Notes:
+*   No specific struggles were encountered during the initial attempt, despite the need for re-work.
+*   No discrepancies or errors related to AI tools were identified.
+*   No particular emphasis or narrative is required for this update.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-07 05:18:06
+Reviewer Notes: 
+
+### Duration
+4 minutes (Planned: 20 minutes)
+
+### Notes
+
+
+## Screenshot – Process Creation Telemetry
+![Process Creation Telemetry](../screenshots/2026-10-07_052909_process-creation-telemetry.png)
+
+## Screenshot – Security Event Distribution
+![Security Event Distribution](../screenshots/2026-10-07_053206_security-event-distribution.png)
+
+---
+
+## Session – 05:22 to 05:37
+### Goal
+Establish what security telemetry Northstar already has
+
+### Definition of Done
+NS-DC01 is confirmed operational., Existing DNS/event-log baseline is acknowledged rather than recreated., Windows Security Event Log is inspected., Recent security events are identified., At least one useful event type is recognized for future investigation.
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+The current phase of the CyberOps Sandbox development focused on incrementally building security operational capabilities from existing Windows infrastructure, specifically NS-DC01. This involved establishing the available security telemetry and confirming that Windows Security Event Logs are a queryable data source for investigations, aligning with a hands-on learning approach rather than deploying a pre-configured SOC solution.
+
+Tasks Completed:
+*   Identified existing security telemetry on NS-DC01.
+*   Confirmed that Windows Security Event Logs can be queried as an investigation data source.
+
+Issues Encountered:
+*   Initial lack of clarity regarding the practical definition of "telemetry."
+*   Misconception that an additional infrastructure baseline was required, despite previous baselining.
+*   Ongoing learning challenges related to understanding Windows Event IDs and their provided information.
+*   Difficulty experienced in extracting useful fields from Event ID 4688.
+
+Next Steps:
+(No specific next steps were provided in the rough notes.)
+
+Notes:
+The overarching strategy for the CyberOps Sandbox is to build it incrementally from an existing Windows infrastructure foundation. This approach is designed to foster learning security operations through direct investigation of the environment, contrasting with the installation of a prebuilt SOC stack.
+AI did not miss or misinterpret any information provided.
+
+### Working Story
+Built the CyberOps Sandbox incrementally from an existing Windows infrastructure foundation, learning security operations by directly investigating the environment rather than installing a prebuilt SOC stack.
+
+### Friction and AI Gaps
+Initially unclear what "telemetry" meant in practical terms, the session initially appeared to require another infrastructure baseline even though the environment had already been baselined previously, understanding Windows Event IDs and what information they provide is still new, extracting useful fields from Event ID 4688 was less straightforward than expected.
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-10-07 05:38:34
+Reviewer Notes: 
+
+### Duration
+14 minutes (Planned: 10 minutes)
+
+### Notes
+### 2026-09-30 • 06:46 to 06:55
+### Goal
+Baseline the Existing Northstar Environment
+
+### Definition of Done
+all information, specs and working information is gathered
+
+### Goal Achieved
+✅ Yes
+
+Summary:
+Initial project baselining activities have been completed, with key specifications documented.
+
+Tasks Completed:
+* Noted baseline specifications for the project.
+
+Issues Encountered:
+No issues or significant struggles were encountered during this period.
+
+Next Steps:
+Next steps are not detailed in the current notes. Further planning will be required to define upcoming tasks.
+
+Notes:
+No additional notes were provided for this update.
+
+### Working Story
+None
+
+### Friction and AI Gaps
+None
+
+### What the AI Missed
+None
+
+### AI Peer Review
+Status: Approved
+Reviewer: human
+Reviewed At: 2026-09-30 06:58:14
+Reviewer Notes: Host OS: Windows 11 Home, build 26200
+
+### Duration
+9 minutes (Planned: 180 minutes)
+
+### Notes
+Gaming PC: your primary Windows host for the Help Desk Lab / future homelab
+
+
+## Lessons learned
+- Keep documentation close to delivery.
+- Use screenshots as proof points.
+- Write the project story in plain language for future reviewers.
+
+## Next steps
+- Continue from the handoff notes and current project status.
+- Capture final cleanup or deployment follow-up items as they are completed.
+
+
+---
+
+# CyberOps-Sandbox
+
+Status: In progress
+
+## Project story
 # CyberOps-Sandbox: Empowering Advanced Endpoint Telemetry (In Progress)
 
 ## 1. Project Story

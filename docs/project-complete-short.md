@@ -3,38 +3,50 @@
 Status: In progress
 
 ## Project story
-# CyberOps-Sandbox: Empowering Advanced Endpoint Telemetry (In Progress)
+Here is a concise project summary for 'CyberOps-Sandbox':
+
+---
+
+# CyberOps-Sandbox: Enhancing PowerShell Telemetry in Wazuh
 
 ## 1. Project Story
 
-The CyberOps-Sandbox project is dedicated to building a robust, controlled environment for cybersecurity operations, focusing on real-world threat detection and incident response capabilities. This ongoing phase specifically concentrated on enhancing our Security Information and Event Management (SIEM) integration. We successfully deployed and configured Wazuh agents on a Windows 11 endpoint, establishing a critical pipeline for ingesting high-fidelity PowerShell telemetry. This work ensures that sophisticated activities like script block logging (Event ID 4104) are captured and centrally archived, laying essential groundwork for advanced threat hunting and forensic analysis within the sandbox environment.
+The 'CyberOps-Sandbox' is an ongoing technical initiative focused on advancing cybersecurity operations capabilities within a controlled environment. Our current primary objective is to enhance endpoint visibility by centralizing and refining PowerShell Script Block Logging (Event ID 4104) telemetry from Windows clients into our Wazuh Security Information and Event Management (SIEM) system. This work is critical for establishing a robust, reliable telemetry pipeline that forms the foundation for effective threat detection engineering and incident response exercises. We are actively building and validating the ingestion process to ensure comprehensive visibility of endpoint activities.
 
 ## 2. Key Achievements
 
-*   **End-to-End PowerShell Telemetry:** Successfully implemented and validated the complete collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry from a Windows 11 client to a centralized Wazuh SIEM.
-*   **Wazuh Agent Integration:** Deployed and registered the Wazuh agent on the `WIN11-CLIENT01` endpoint, ensuring active monitoring and connectivity.
-*   **Advanced Auditing Configuration:** Configured Windows Group Policy to enable PowerShell Script Block Logging, capturing detailed script execution data.
-*   **Raw Event Archiving:** Enabled and verified the Wazuh manager's capability to retain raw JSON events, providing granular data for deep investigations.
-*   **System Hardening:** Identified and resolved critical configuration issues in the Wazuh manager XML, enhancing its stability and functionality.
+During this phase of the project, we have made significant progress in establishing a foundational telemetry pipeline:
+
+*   **Enabled Raw Event Archiving:** Successfully identified and enabled Wazuh Filebeat archive forwarding, ensuring that all raw endpoint telemetry, including PowerShell Script Block Logging, is persistently stored for forensic and analysis purposes.
+*   **Validated Raw Event Ingestion:** Confirmed the successful end-to-end ingestion of newly generated PowerShell Script Block Logging (Event ID 4104) events from the `WIN11-CLIENT01` endpoint into the Wazuh manager's raw archives (`/var/ossec/logs/archives/archives.json`).
+*   **Established Telemetry Baseline:** Inspected existing PowerShell telemetry within the Wazuh dashboard, allowing us to establish a baseline understanding of event structure and identify existing security policy discovery activities.
+*   **Operational Readiness:** Verified the operational readiness of core Wazuh services and confirmed active agent connectivity for the monitored Windows endpoint.
 
 ## 3. Lessons Learned
 
-*   **Verify at the Source First:** It is paramount to confirm local event generation on the source endpoint *before* troubleshooting SIEM agent collection or forwarding issues. This ensures the problem isn't upstream of the agent.
-*   **Policy Activation Nuances:** Understand that some system policy changes, particularly in PowerShell, require a fresh process or session to take effect. Always test changes in a new context.
-*   **Configuration XML Validation:** Thoroughly validate configuration files (e.g., Wazuh manager XML) to avoid subtle syntax errors or duplicate elements that can silently prevent critical features from activating.
-*   **Structured Troubleshooting:** Establish a systematic troubleshooting sequence: enable logging, generate a controlled event, verify it locally, then verify its presence in the SIEM manager's archives.
+This phase provided valuable insights that will guide future development:
+
+*   **Telemetry Pipeline Granularity:** It is crucial to explicitly separate and validate each distinct stage of a telemetry pipeline (event generation, agent forwarding, manager archiving, and dashboard indexing) as individual milestones. This approach greatly streamlines troubleshooting and accurately isolates issues.
+*   **Precision in Test Execution:** Early and clear identification of the target execution host is vital to prevent misdirected testing efforts and accelerate overall progress, reducing friction in the development cycle.
+*   **Differentiating Ingestion vs. Visibility:** Discrepancies between successful raw archive ingestion and subsequent dashboard indexing can be significant time sinks. Future efforts will emphasize validating these concerns independently from the outset to enhance troubleshooting efficiency.
 
 ## 4. Next Steps
 
-This specific implementation and validation phase has reached its immediate objectives, establishing a foundational capability for Windows endpoint telemetry within the CyberOps-Sandbox. The overall project continues, and future iterations will build upon this robust data ingestion pipeline to develop advanced detection rules, automate incident response playbooks, and integrate additional security tools and data sources.
+Our immediate focus is on resolving the current telemetry visibility challenges and advancing into detection engineering:
+
+*   **Resolve Dashboard Visibility:** Investigate and resolve the technical discrepancy preventing newly archived PowerShell Script Block Logging events from appearing in the Wazuh dashboard.
+*   **Develop Detections:** Proceed with developing and deploying new detection rules and dashboards, leveraging the now-validated raw PowerShell telemetry.
+*   **Expand Test Coverage:** Broaden controlled activity generation to simulate additional PowerShell-based attack techniques, further enhancing the sandbox's detection engineering capabilities.
 
 ## 5. Proof Points
 
-*   Wazuh Agent Installed/Started Successfully
-*   Wazuh Powershell Configuration
-*   Wazuh Windows Endpoint Investigation
-*   Raw Event Archiving Configuration
-*   Wazuh Powershell Event Ingestion Confirmed
+*   **Project Logs:** The engineering log entry for 2026-11-18.md details the tasks completed, issues encountered, and the clear distinction between successful raw event ingestion and unresolved dashboard visibility, as noted in the "AI Peer Review."
+*   **Screenshot Captions:** Visual evidence includes:
+    *   "Wazuh Filebeat Archive Forwarding Enabled"
+    *   "Wazuh Powershell Event Ingestion Confirmed"
+    *   "Wazuh Powershell Event Dashboard Visibility" (demonstrating existing visibility while highlighting the ongoing challenge for new events)
+
+---
 
 ## What we shipped
 - The project was completed with a clear objective, technical execution, and proof captured in the logs.
@@ -42,15 +54,15 @@ This specific implementation and validation phase has reached its immediate obje
 - The work can be reviewed quickly by anyone familiar with the project.
 
 ## Key proof moments
+### Highlight: Wazuh Powershell Event Dashboard Visibility
+![Wazuh Powershell Event Dashboard Visibility](../screenshots/2026-11-18_142508_wazuh-powershell-event-dashboard-visibility.png)
+The source log labels this capture “Wazuh Powershell Event Dashboard Visibility.”
 ### Highlight: Telemetry Visibility Gap
 ![Telemetry Visibility Gap](../screenshots/2026-10-08_053048_telemetry-visibility-gap.png)
 The source log labels this capture “Telemetry Visibility Gap.”
 ### Highlight: Wazuh Powershell Event Ingestion Confirmed
 ![Wazuh Powershell Event Ingestion Confirmed](../screenshots/2026-11-17_060947_wazuh-powershell-event-ingestion-confirmed.png)
 The source log labels this capture “Wazuh Powershell Event Ingestion Confirmed.”
-### Highlight: Security Event Distribution
-![Security Event Distribution](../screenshots/2026-10-07_053206_security-event-distribution.png)
-The source log labels this capture “Security Event Distribution.”
 
 
 ## Lessons learned

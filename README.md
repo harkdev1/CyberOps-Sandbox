@@ -7,94 +7,105 @@
 ## Status: In progress
 
 ## Project summary
-# CyberOps-Sandbox: Empowering Advanced Endpoint Telemetry (In Progress)
+Here is a concise project summary for 'CyberOps-Sandbox':
+
+---
+
+# CyberOps-Sandbox: Enhancing PowerShell Telemetry in Wazuh
 
 ## 1. Project Story
 
-The CyberOps-Sandbox project is dedicated to building a robust, controlled environment for cybersecurity operations, focusing on real-world threat detection and incident response capabilities. This ongoing phase specifically concentrated on enhancing our Security Information and Event Management (SIEM) integration. We successfully deployed and configured Wazuh agents on a Windows 11 endpoint, establishing a critical pipeline for ingesting high-fidelity PowerShell telemetry. This work ensures that sophisticated activities like script block logging (Event ID 4104) are captured and centrally archived, laying essential groundwork for advanced threat hunting and forensic analysis within the sandbox environment.
+The 'CyberOps-Sandbox' is an ongoing technical initiative focused on advancing cybersecurity operations capabilities within a controlled environment. Our current primary objective is to enhance endpoint visibility by centralizing and refining PowerShell Script Block Logging (Event ID 4104) telemetry from Windows clients into our Wazuh Security Information and Event Management (SIEM) system. This work is critical for establishing a robust, reliable telemetry pipeline that forms the foundation for effective threat detection engineering and incident response exercises. We are actively building and validating the ingestion process to ensure comprehensive visibility of endpoint activities.
 
 ## 2. Key Achievements
 
-*   **End-to-End PowerShell Telemetry:** Successfully implemented and validated the complete collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry from a Windows 11 client to a centralized Wazuh SIEM.
-*   **Wazuh Agent Integration:** Deployed and registered the Wazuh agent on the `WIN11-CLIENT01` endpoint, ensuring active monitoring and connectivity.
-*   **Advanced Auditing Configuration:** Configured Windows Group Policy to enable PowerShell Script Block Logging, capturing detailed script execution data.
-*   **Raw Event Archiving:** Enabled and verified the Wazuh manager's capability to retain raw JSON events, providing granular data for deep investigations.
-*   **System Hardening:** Identified and resolved critical configuration issues in the Wazuh manager XML, enhancing its stability and functionality.
+During this phase of the project, we have made significant progress in establishing a foundational telemetry pipeline:
+
+*   **Enabled Raw Event Archiving:** Successfully identified and enabled Wazuh Filebeat archive forwarding, ensuring that all raw endpoint telemetry, including PowerShell Script Block Logging, is persistently stored for forensic and analysis purposes.
+*   **Validated Raw Event Ingestion:** Confirmed the successful end-to-end ingestion of newly generated PowerShell Script Block Logging (Event ID 4104) events from the `WIN11-CLIENT01` endpoint into the Wazuh manager's raw archives (`/var/ossec/logs/archives/archives.json`).
+*   **Established Telemetry Baseline:** Inspected existing PowerShell telemetry within the Wazuh dashboard, allowing us to establish a baseline understanding of event structure and identify existing security policy discovery activities.
+*   **Operational Readiness:** Verified the operational readiness of core Wazuh services and confirmed active agent connectivity for the monitored Windows endpoint.
 
 ## 3. Lessons Learned
 
-*   **Verify at the Source First:** It is paramount to confirm local event generation on the source endpoint *before* troubleshooting SIEM agent collection or forwarding issues. This ensures the problem isn't upstream of the agent.
-*   **Policy Activation Nuances:** Understand that some system policy changes, particularly in PowerShell, require a fresh process or session to take effect. Always test changes in a new context.
-*   **Configuration XML Validation:** Thoroughly validate configuration files (e.g., Wazuh manager XML) to avoid subtle syntax errors or duplicate elements that can silently prevent critical features from activating.
-*   **Structured Troubleshooting:** Establish a systematic troubleshooting sequence: enable logging, generate a controlled event, verify it locally, then verify its presence in the SIEM manager's archives.
+This phase provided valuable insights that will guide future development:
+
+*   **Telemetry Pipeline Granularity:** It is crucial to explicitly separate and validate each distinct stage of a telemetry pipeline (event generation, agent forwarding, manager archiving, and dashboard indexing) as individual milestones. This approach greatly streamlines troubleshooting and accurately isolates issues.
+*   **Precision in Test Execution:** Early and clear identification of the target execution host is vital to prevent misdirected testing efforts and accelerate overall progress, reducing friction in the development cycle.
+*   **Differentiating Ingestion vs. Visibility:** Discrepancies between successful raw archive ingestion and subsequent dashboard indexing can be significant time sinks. Future efforts will emphasize validating these concerns independently from the outset to enhance troubleshooting efficiency.
 
 ## 4. Next Steps
 
-This specific implementation and validation phase has reached its immediate objectives, establishing a foundational capability for Windows endpoint telemetry within the CyberOps-Sandbox. The overall project continues, and future iterations will build upon this robust data ingestion pipeline to develop advanced detection rules, automate incident response playbooks, and integrate additional security tools and data sources.
+Our immediate focus is on resolving the current telemetry visibility challenges and advancing into detection engineering:
+
+*   **Resolve Dashboard Visibility:** Investigate and resolve the technical discrepancy preventing newly archived PowerShell Script Block Logging events from appearing in the Wazuh dashboard.
+*   **Develop Detections:** Proceed with developing and deploying new detection rules and dashboards, leveraging the now-validated raw PowerShell telemetry.
+*   **Expand Test Coverage:** Broaden controlled activity generation to simulate additional PowerShell-based attack techniques, further enhancing the sandbox's detection engineering capabilities.
 
 ## 5. Proof Points
 
-*   Wazuh Agent Installed/Started Successfully
-*   Wazuh Powershell Configuration
-*   Wazuh Windows Endpoint Investigation
-*   Raw Event Archiving Configuration
-*   Wazuh Powershell Event Ingestion Confirmed
+*   **Project Logs:** The engineering log entry for 2026-11-18.md details the tasks completed, issues encountered, and the clear distinction between successful raw event ingestion and unresolved dashboard visibility, as noted in the "AI Peer Review."
+*   **Screenshot Captions:** Visual evidence includes:
+    *   "Wazuh Filebeat Archive Forwarding Enabled"
+    *   "Wazuh Powershell Event Ingestion Confirmed"
+    *   "Wazuh Powershell Event Dashboard Visibility" (demonstrating existing visibility while highlighting the ongoing challenge for new events)
+
+---
 
 ## Latest session
 ### Work completed
-Configured Windows PowerShell Script Block Logging through the Windows registry, verified local generation of PowerShell Event ID 4104, confirmed the Wazuh agent was collecting the PowerShell Operational event channel, enabled Wazuh JSON event archiving, corrected the Wazuh manager configuration XML and validated it, restarted the Wazuh manager successfully, verified that controlled PowerShell test events reached ubuntu-siem01 and were written to /var/ossec/logs/archives/archives.json.
+Inspected PowerShell Event ID 4104 records in Wazuh Threat Hunting, examined event JSON and script-block contents, identified security-policy discovery activity using secedit and PasswordHistorySize, enabled Filebeat Wazuh archive forwarding, validated the Filebeat configuration, restarted Filebeat successfully, generated controlled Get-LocalUser activity on WIN11-CLIENT01, verified the resulting Event ID 4104 records locally, confirmed the events reached /var/ossec/logs/archives/archives.json.
 
 ### AI-reviewed session summary
 **Summary:**
-Successfully implemented and validated end-to-end collection of Windows PowerShell Event ID 4104 (Script Block Logging) telemetry. This involved enabling script-block auditing on a Windows endpoint via the registry, configuring the Wazuh agent to collect these events, and setting up the Wazuh manager to retain raw JSON events in its archives. Key issues encountered during configuration, including incorrect manager XML and policy activation nuances, were identified and resolved, culminating in the successful verification of controlled PowerShell events reaching the centralized SIEM and being stored in JSON format.
+This documentation outlines the successful establishment and validation of centralized PowerShell Script Block Logging telemetry within Wazuh. Key activities included enabling and configuring Filebeat archive forwarding, inspecting raw PowerShell Event ID 4104 records, identifying security policy discovery activity, and validating controlled endpoint actions against raw SIEM archives. The work specifically focused on distinguishing successful event ingestion from dashboard indexing limitations, thereby laying a critical foundation for subsequent detection engineering efforts.
 
 **Tasks Completed:**
-*   Configured Windows PowerShell Script Block Logging through the Windows registry.
-*   Verified local generation of PowerShell Event ID 4104 on the Windows endpoint.
-*   Confirmed the Wazuh agent was successfully collecting the PowerShell Operational event channel.
-*   Enabled Wazuh JSON event archiving on the manager.
-*   Corrected the Wazuh manager configuration XML to enable archiving.
-*   Validated the corrected Wazuh manager configuration.
-*   Successfully restarted the Wazuh manager service.
-*   Verified that controlled PowerShell test events reached the `ubuntu-siem01` Wazuh manager.
-*   Confirmed that these events were written to `/var/ossec/logs/archives/archives.json`.
+*   Inspected existing PowerShell Event ID 4104 records within Wazuh Threat Hunting.
+*   Examined event JSON and script-block contents to understand current telemetry.
+*   Identified security-policy discovery activity using `secedit` and `PasswordHistorySize` commands.
+*   Enabled Filebeat Wazuh archive forwarding to ensure all raw events are stored.
+*   Validated the Filebeat configuration for correctness.
+*   Successfully restarted the Filebeat service.
+*   Generated controlled `Get-LocalUser` activity on the designated endpoint, WIN11-CLIENT01, to create new events.
+*   Verified the resulting Event ID 4104 records locally on WIN11-CLIENT01.
+*   Confirmed that the generated events successfully reached `/var/ossec/logs/archives/archives.json` on the Wazuh manager.
 
 **Issues Encountered:**
-*   **Wazuh Event Visibility:** PowerShell events were initially visible locally on the Windows endpoint but were not appearing in Wazuh, suggesting a collection or forwarding issue.
-*   **Script Block Logging Activation:** Script Block Logging was not enabled through the initially expected registry policy, requiring a specific registry key modification.
-*   **PowerShell Session Refresh:** After enabling the Script Block Logging policy, a fresh PowerShell process was required before controlled events would appear, a detail initially overlooked.
-*   **Wazuh Manager Configuration Errors:** The Wazuh manager configuration XML contained duplicate root elements, which prevented JSON archiving from being enabled successfully until corrected.
-*   **Troubleshooting Focus:** Initial troubleshooting efforts were misdirected, focusing too heavily on Wazuh agent collection and manager forwarding before adequately confirming the Windows endpoint was generating the specific controlled PowerShell events.
+*   Difficulty in distinguishing between successful raw event ingestion into archives and their subsequent indexing for dashboard visibility.
+*   Initial generation of test activity occurred on the physical Windows host rather than the intended monitored Windows client.
+*   Challenges in determining why newly archived events were not appearing in the expected dashboard search results despite successful archival.
+*   Time spent on isolating and troubleshooting the telemetry pipeline, diverting focus from direct progression into detection engineering.
 
 **Next Steps:**
-No further next steps were outlined for this specific implementation and validation phase.
+*   Investigate and resolve the discrepancy between raw archive ingestion and dashboard visibility for the new Event ID 4104 records.
+*   Develop new detection rules or dashboards utilizing the validated PowerShell Script Block Logging telemetry.
+*   Expand controlled activity generation to cover additional PowerShell-based attack techniques.
 
 **Notes:**
-*   A key lesson learned during troubleshooting was the critical importance of verifying local event generation on the source endpoint *before* investigating collection or forwarding issues with the SIEM agent.
-*   The correct sequence for verifying end-to-end telemetry was established: enable logging, generate a controlled event, verify the event locally on the source, then verify its presence in the manager's archives.
-*   Careful attention must be paid to PowerShell policy activation, as some changes (like Script Block Logging via registry) require opening a fresh PowerShell process to take effect.
+The AI assistant's guidance led to several inefficiencies during this process. Specifically, it did not emphasize establishing the correct execution host early enough, allowing initial testing to proceed on an unmonitored physical Windows host. Furthermore, the AI treated dashboard visibility and raw archive ingestion too closely as a single validation step. A more effective approach would have been to explicitly separate and validate the distinct stages of the telemetry pipeline: endpoint event generation, agent forwarding, manager archiving, and finally, indexer/dashboard visibility.
 
-**Session time:** 2026-11-17, 05:05 to 06:11
+**Session time:** 2026-11-18, 14:08 to 14:40
 
-**Goal:** Integrate WIN11-CLIENT01 into the Wazuh monitoring environment, register its Wazuh agent with ubuntu-siem01, verify agent connectivity, generate controlled Windows activity, confirm centralized telemetry ingestion.
+**Goal:** Verify that PowerShell Script Block Logging events (Event ID 4104) collected from WIN11-CLIENT01 are searchable in the Wazuh Dashboard, establish a reliable workflow for inspecting endpoint telemetry, prepare to transition into detection engineering.
 
-**Goal achieved:** Yes
+**Goal achieved:** No
 
-**Duration:** 65 minutes (planned: 40 minutes)
+**Duration:** 31 minutes (planned: 60 minutes)
 
-**Working story:** Successful implementation and validation of end-to-end Windows PowerShell telemetry collection, enabling script-block auditing on the endpoint, configuring Wazuh to retain raw JSON events, troubleshooting and correcting the manager configuration, proving that controlled Event ID 4104 records traveled from the Windows endpoint to the centralized SIEM.
+**Working story:** Improving centralized PowerShell telemetry visibility, identifying and correcting disabled Filebeat archive forwarding, inspecting actual Windows Script Block Logging records, validating controlled endpoint activity through raw SIEM archives, distinguishing successful ingestion from dashboard indexing limitations, establishing a foundation for subsequent detection engineering.
 
-**Friction or blockers:** PowerShell events were initially visible locally but not appearing in Wazuh, Script Block Logging was not enabled through the expected registry policy, the policy change required opening a fresh PowerShell process before the controlled event appeared, the Wazuh manager configuration also contained duplicate root XML elements that needed correction before archiving could be enabled successfully.
+**Friction or blockers:** Distinguishing raw event ingestion from dashboard indexing, initially generating test activity on the physical Windows host instead of the monitored Windows client, determining why newly archived events were not appearing in the expected dashboard search results, spending additional time isolating the telemetry pipeline rather than progressing directly into detection engineering.
 
-**AI gaps:** The initial troubleshooting focused too heavily on Wazuh collection and forwarding before confirming that Windows was generating the specific controlled PowerShell events, the first test commands did not account for Script Block Logging being disabled, the need to open a fresh PowerShell process after enabling the policy was identified later. The troubleshooting ultimately established the correct sequence: enable logging, generate a controlled event, verify it locally, then verify it in the manager archive.
+**AI gaps:** The AI did not establish the execution host early enough and initially allowed testing to proceed on the physical Windows host. It also treated dashboard visibility and raw archive ingestion too closely as one validation step. The investigation should have separated endpoint event generation, agent forwarding, manager archiving, and indexer/dashboard visibility from the beginning.
 
-**AI peer review:** Approved by human at 2026-11-17 06:12:58
+**AI peer review:** Approved by human at 2026-11-18 14:42:53
 
-**Reviewer notes:** The session achieved a significant infrastructure milestone. The evidence establishes that PowerShell Script Block Logging is enabled, Event ID 4104 records are generated locally, the Wazuh agent forwards those records, and the Wazuh manager stores them in its raw event archive.
+**Reviewer notes:** The session made meaningful infrastructure progress but did not complete the full detection-engineering objective. Filebeat archive forwarding was disabled and was successfully enabled. Existing PowerShell events were searchable in the dashboard, with eight matching records observed. Newly generated Get-LocalUser events were confirmed in the manager's raw archive, but their appearance in the dashboard remains unresolved.
 
 **Notes:** None.
 
-**Handoff:** The next session should begin by verifying that PowerShell Event ID 4104 records are searchable in the Wazuh Dashboard, then proceed to detection engineering and controlled detection testing.
+**Handoff:** The latest controlled Get-LocalUser events were confirmed in the Wazuh manager's raw archive. The remaining issue is confirming their visibility in the Wazuh Dashboard. Resume by investigating archive indexing and dashboard searchability without rebuilding or unnecessarily modifying the working telemetry pipeline. After that, proceed with detection engineering.
 
 <!-- autodoc:project-snapshot:end -->
 
